@@ -1,3 +1,16 @@
+- [Rental-Recommendation-System-in-Singapore](#rental-recommendation-system-in-singapore)
+- [Conda virtual environment configuration](#conda-virtual-environment-configuration)
+- [Install Required Packages](#install-required-packages)
+- [Github SSH Key Setup](#github-ssh-key-setup)
+- [GitHub Workflow](#github-workflow)
+  - [Set up the local development environment](#set-up-the-local-development-environment)
+  - [Step 1: Create a branch](#step-1-create-a-branch)
+  - [Step 2: Make changes locally](#step-2-make-changes-locally)
+  - [Step 3: Create a pull request](#step-3-create-a-pull-request)
+  - [Step 4: Address review comments](#step-4-address-review-comments)
+  - [Step 5: Merge your pull request](#step-5-merge-your-pull-request)
+  - [Step 6: Delete your branch](#step-6-delete-your-branch)
+
 # Rental-Recommendation-System-in-Singapore
 Intelligent Reasoning Systems: Group 3.
 # Conda virtual environment configuration
@@ -184,7 +197,7 @@ git add your_file_name
 
 To add all the files in the tracked directory, including subdirectories, to staging. However, there may be files you do not want to track, such as temporary files created by you or by the software you use. 
 ```
-git add -a
+git add -A
 ```
 
 You can create a .gitignore file to tell Git to always ignore certain files.
@@ -203,15 +216,63 @@ git config --global user.email "you@example.com"
 git config --global user.name "Your Github ID Name"
 ```
 ## Step 3: Create a pull request
+**Here is where team communication comes into play. Has anyone updated the main branch on GitHub since you created your branch?**
+
+**If not:**
+
 Push your changes upstream (-u) to the repo pointed to by origin and creates a copy of your branch in the repo on GitHub:
 ```
 git push -u origin your-branch_name
 ```
+You will need to enter the passphrase which you set before.
+
 To push again to this same branch again, just run:
 ```
 git push
 ```
+**Or:**
 
+If others have pushed to GitHub since you created your local branch, you may want to bring a fresh copy of the main branch to your local system to resolve conflicts prior to pushing your code to GitHub.
+
+Refresh your local git environment with what is on GitHub.
+```
+git fetch
+```
+Note: The above brings down the current copy of the main branch to your git environment, but does not update your local main branch.
+
+Rebase to add your commits (the changes you have checked-in locally) to the head of the main pointed to by the origin.
+
+```
+git rebase origin/main
+```
+or
+```
+git rebase -i origin/main
+```
+Interactive Rebase Using the ```-i``` parameter will open a file that tells you what actions are going to be taken. 
+
+When you close that file, those actions will be taken. You can edit the actions while the file is open. This can be handy if you want to clean up your history, or for troubleshooting. 
+
+If you don’t want Git to take any action, delete the update instructions before closing the file.
+
+**If this works**, you are ready to push to GitHub.
+
+**If the rebase failed due to conflicts**, Git will have placed conflict markers in the offending files. Use ‘```git status```’ to see what files have been changed.
+
+Edit each of these files, fix the conflicts, remove the markers, and save the files. 
+![Alt text](./docs/Img/FixRebase.png)
+When you get each file the way you want it, use ‘```git add```’ to save the modified file.
+
+Then continue the rebase:
+```
+git rebase --continue
+```
+![Alt text](./docs/Img/RebaseConflicts.png)
 ## Step 4: Address review comments
+![Alt text](./docs/Img/PullRequest.png)
+
+![Alt text](./docs/Img/OpenPullRequest.png)
+
 ## Step 5: Merge your pull request
+![Alt text](./docs/Img/MergePullRequest.png)
 ## Step 6: Delete your branch
