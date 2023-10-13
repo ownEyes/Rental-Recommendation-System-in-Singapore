@@ -163,22 +163,55 @@ git branch
 ```
 ## Step 2: Make changes locally
 
-It is a good idea to save versions of your work frequently. Do this with the ‘git commit’ command. 
+It is a good idea to save versions of your work frequently. Do this with the ‘```git commit```’ command. 
 
-The process involves staging the work you want to ‘check in’, using the ‘git add’ command, then using ‘git commit’ to tell Git to save the staged changes. 
+The process involves staging the work you want to ‘check in’, using the ‘```git add```’ command, then using ‘```git commit```’ to tell Git to save the staged changes. 
 
 Git keeps track of each commit batch and allows you to roll back to any prior commit if necessary. 
 
-You can repeatedly ‘git add’ and ‘git commit’ in your local environment without ever pushing to GitHub.
+You can repeatedly ‘```git add```’ and ‘```git commit```’ in your local environment without ever pushing to GitHub.
 
-You may want to occasionally ‘git push’ unfinished code to GitHub (without doing a pull request) to have a backup copy, but it is good practice to merge to the master branch only code that has been tested and ready for release.
+You may want to occasionally ‘```git push```’ unfinished code to GitHub (without doing a pull request) to have a backup copy, but it is good practice to merge to the master branch only code that has been tested and ready for release.
 
 To check what files have changed, what files git is tracking, and what files have been staged for commit:
 ```
 git status
+``` 
+Use the ‘```git add```’ command to add a file to staging. Do this to add a new file to Git or to add a modified file to staging:
+```
+git add your_file_name
 ```
 
+To add all the files in the tracked directory, including subdirectories, to staging. However, there may be files you do not want to track, such as temporary files created by you or by the software you use. 
+```
+git add -a
+```
+
+You can create a .gitignore file to tell Git to always ignore certain files.
+
+To remove a file. This removes the file from git and the branch:
+```
+git rm your_file_name
+```
+Commit the staged files when you have added the files you wish to have Git save to staging:
+```
+git commit -m'descriptive message here'
+```
+You might need to config git before commit:
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Github ID Name"
+```
 ## Step 3: Create a pull request
+Push your changes upstream (-u) to the repo pointed to by origin and creates a copy of your branch in the repo on GitHub:
+```
+git push -u origin your-branch_name
+```
+To push again to this same branch again, just run:
+```
+git push
+```
+
 ## Step 4: Address review comments
 ## Step 5: Merge your pull request
 ## Step 6: Delete your branch
