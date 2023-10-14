@@ -269,10 +269,36 @@ git rebase --continue
 ```
 ![Alt text](./docs/Img/RebaseConflicts.png)
 ## Step 4: Address review comments
+## Step 5: Merge your pull request
 ![Alt text](./docs/Img/PullRequest.png)
 
 ![Alt text](./docs/Img/OpenPullRequest.png)
 
-## Step 5: Merge your pull request
 ![Alt text](./docs/Img/MergePullRequest.png)
 ## Step 6: Delete your branch
+
+The steps to change a git branch name are:
+
+1. Rename the Git branch locally with the ```git branch -m new-branch-name`` command
+
+2. Push the new branch to your GitHub or GitLab repo
+
+3. Delete the branch with the old name from your remote repo
+   
+While on the old branch, the command to change the Git branch name, which requires the -m switch, is issued:
+```
+git branch -m NEW_BRANCH_NAME
+```
+To show all branches and check the Git branch name is renamed successeful:
+```
+git branch -a
+```
+Delete renamed Git branch from GitHub
+```
+git push origin --delete OLD_BRANCH_NAME
+```
+
+Then you can push the renamed Git branch remotely.
+```
+git push origin -u NEW_BRANCH_NAME
+```
