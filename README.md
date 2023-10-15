@@ -10,6 +10,8 @@
   - [Step 4: Address review comments](#step-4-address-review-comments)
   - [Step 5: Merge your pull request](#step-5-merge-your-pull-request)
   - [Step 6: Delete your branch](#step-6-delete-your-branch)
+  - [How to change a branch name](#how-to-change-a-branch-name)
+
 
 # Rental-Recommendation-System-in-Singapore
 Intelligent Reasoning Systems: Group 3.
@@ -35,7 +37,7 @@ Install each required package by commandline during development.
 
 After development, check the version of packages then write a requirements.txt.
 ```
-
+conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy
 ```
 # Github SSH Key Setup
 1. Make sure Git is installed in our system:
@@ -277,9 +279,39 @@ git rebase --continue
 ![Alt text](./docs/Img/MergePullRequest.png)
 ## Step 6: Delete your branch
 
+Switch to main barnch before you delete.
+```
+git checkout main
+```
+Then, pull the latest changes from the remote repository:
+```
+git pull origin main
+```
+```git pull origin main``` performs two main operations:
+1. Fetch: It retrieves any new work that has been pushed to your main branch on the remote repository named origin since you last checked. This is essentially the same as running git fetch origin main.
+
+2. Merge: It merges any new changes that were fetched from the remote main branch into your current local branch.
+   
+    If there are any conflicts between your local and remote branches, Git will prompt you to resolve them. After resolving any conflicts, you can commit the changes to complete the merge.
+
+Delete your branch locally
+```
+git branch --delete old-branch
+#or
+git branch -d old-branch
+```
+
+Delete your branch from github, run 
+```
+git push origin --delete old-branch
+```
+**When you’re ready to work on a new feature, create a new branch.**
+
+## How to change a branch name
+
 The steps to change a git branch name are:
 
-1. Rename the Git branch locally with the ```git branch -m new-branch-name`` command
+1. Rename the Git branch locally with the ```git branch -m new-branch-name``` command
 
 2. Push the new branch to your GitHub or GitLab repo
 
