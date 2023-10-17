@@ -1,5 +1,7 @@
 import os, random, string
 
+GEOCODING_APIKEY=os.getenv('GEOCODING_APIKEY', None)
+
 class Config(object):
 
     basedir = os.path.abspath(os.path.dirname(__file__))
