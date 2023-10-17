@@ -5,6 +5,7 @@ from app import db
 
 class RentalHouse(db.Model):
     HouseID = db.Column(db.Integer, primary_key=True, nullable=False)
+    HouseName = db.Column(db.Text, nullable=False)
     neighbourhood_cleansed = db.Column(db.Text, nullable=False)
     neighbourhood_group_cleansed = db.Column(db.Text, nullable=False)
     picture_url = db.Column(db.Text, nullable=False)

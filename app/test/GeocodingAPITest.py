@@ -3,7 +3,7 @@ import numpy as np
 import requests
 import json
 
-GEOCODING_APIKEY='qw'
+GEOCODING_APIKEY='REMOVED'
 
 
 # def get_geocoding(location):

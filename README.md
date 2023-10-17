@@ -37,7 +37,7 @@ Install each required package by commandline during development.
 
 After development, check the version of packages then write a requirements.txt.
 ```
-conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify 
+conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter
 ```
 # Github SSH Key Setup
 1. Make sure Git is installed in our system:
