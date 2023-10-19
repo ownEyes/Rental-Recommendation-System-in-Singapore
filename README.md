@@ -37,7 +37,7 @@ Install each required package by commandline during development.
 
 After development, check the version of packages then write a requirements.txt.
 ```
-conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy
+conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter folium
 ```
 # Github SSH Key Setup
 1. Make sure Git is installed in our system:
@@ -288,7 +288,7 @@ Then, pull the latest changes from the remote repository:
 git pull origin main
 ```
 ```git pull origin main``` performs two main operations:
-1. Fetch: It retrieves any new work that has been pushed to your main branch on the remote repository named origin since you last checked. This is essentially the same as running git fetch origin main.
+1. Fetch: It retrieves any new work that has been pushed to your main branch on the remote repository named origin since you last checked. This is essentially the same as running ```git fetch origin main```.
 
 2. Merge: It merges any new changes that were fetched from the remote main branch into your current local branch.
    
