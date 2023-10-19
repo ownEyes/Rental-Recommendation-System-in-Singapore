@@ -23,7 +23,7 @@ class RentalHouse(db.Model):
     closest_mall_distance = db.Column(db.Float, nullable=False)
     closest_mall_name = db.Column(db.Text, nullable=False)
     closest_mall_address = db.Column(db.Text, nullable=False)
-    conditioning = db.Column(db.Boolean, nullable=False)
+    aircon = db.Column(db.Boolean, nullable=False)
     BBQ = db.Column(db.Boolean, nullable=False)
     gym = db.Column(db.Boolean, nullable=False)
     pool = db.Column(db.Boolean, nullable=False)

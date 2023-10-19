@@ -44,20 +44,20 @@ def register_blueprints(app):
 
 def configure_database(app):
 
-    # @app.got_first_request
-    # def initialize_database():
-    #     try:
-    #         db.create_all()
-    #     except Exception as e:
+    @app.got_first_request
+    def initialize_database():
+        try:
+            db.create_all()
+        except Exception as e:
 
-    #         print('> Error: DBMS Exception: ' + str(e) )
+            print('> Error: DBMS Exception: ' + str(e) )
 
-    #         # fallback to SQLite
-    #         basedir = os.path.abspath(os.path.dirname(__file__))
-    #         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
+            # fallback to SQLite
+            basedir = os.path.abspath(os.path.dirname(__file__))
+            app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
 
-    #         print('> Fallback to SQLite ')
-    #         db.create_all()
+            print('> Fallback to SQLite ')
+            db.create_all()
     return
 
     @app.teardown_request
