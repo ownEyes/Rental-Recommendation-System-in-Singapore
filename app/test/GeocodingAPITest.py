@@ -1,9 +1,12 @@
 # import googlemaps
+import os
+from dotenv import load_dotenv
 import numpy as np
 import requests
 import json
 
-GEOCODING_APIKEY='REMOVED'
+load_dotenv()
+GEOCODING_APIKEY=os.getenv('GEOCODING_APIKEY', None)
 
 
 # def get_geocoding(location):
@@ -67,6 +70,7 @@ def get_reverseGeocoding(coordinates):
 
 if __name__ == "__main__":
 	# test=get_geocoding("shanghai")
-	coordinates=np.array([1.2966426, 103.7763939])  # nus
+	# coordinates=np.array([1.2966426, 103.7763939])  # nus
+	coordinates=np.array([1.36288, 103.86575])
 	test=get_reverseGeocoding(coordinates)
 	print(test)

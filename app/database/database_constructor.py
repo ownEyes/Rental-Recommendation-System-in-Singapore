@@ -1,11 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 import pandas as pd
 import os
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-csv_file_path= './processed_data_merged_final_v2.csv'
-file_path = os.path.join(current_directory, csv_file_path)
+house_file_path= './processed_data_merged_final_v2.csv'
+user_file_path='./userInfo.csv'
+house_path = os.path.join(current_directory, house_file_path)
+user_path=os.path.join(current_directory, user_file_path)
 database_file_path = os.path.join(current_directory, 'database.db')
 
 app = Flask(__name__)
@@ -48,13 +51,24 @@ class RentalHouse(db.Model):
     stove = db.Column(db.Boolean, nullable=False)
     fan = db.Column(db.Boolean, nullable=False)
 
+class User(db.Model, UserMixin):
+
+    userID = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+    def get_id(self):
+        return self.userID
 
 if __name__ == '__main__':
     
     with app.app_context():
         db.drop_all()
         db.create_all()
-        raw= pd.read_csv(file_path)
+        raw= pd.read_csv(house_path)
         for index, row in raw.iterrows():
             rentalHouse=RentalHouse(
                 HouseID=row['id'],
@@ -91,6 +105,16 @@ if __name__ == '__main__':
                 Pets=row['Pets'],
                 stove=row['stove'],
                 fan=row['fan']
+            )
+            db.session.add(rentalHouse)
+            db.session.commit()
+
+        usr= pd.read_csv(user_path)
+        for index, row in usr.iterrows():
+            user=User(
+                userID=usr['userID'],
+                username=usr['userName'],
+                password=usr['password']
             )
             db.session.add(rentalHouse)
             db.session.commit()

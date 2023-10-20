@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,68 +11,54 @@
     <link rel="stylesheet" href="../static/css/login.css">
     <link rel="stylesheet" href="../static/css/all.min.css">
     <title>Login-Rent Recommender</title>
-  </head>
-  <body>
-      <section class="form my-4 mx-5">
-          <div class="container">
-              <div class="row no-gutters">
-                  <div class="col-lg-5">
-                      <img src="../static/img/login.jpg" class="img-fluid" alt="">
-                  </div>
-                  <div class="col-lg-7 px-5 pt-5">
-                      <h1 class="font-weight-bold py-3">Login</h1>
-                      <h4>Sign into your account</h4>
-                      <form>
-                          <div class="form-row">
-                              <div class="col-lg-7">
-                              <i class="fas fa-user-plus cust" aria-hidden="true"></i>
-                                  <input type="text" placeholder="Username" class="form-control" id="Username">
-                              </div>
-                          </div>
-                          <div class="form-row">
-                              <div class="col-lg-7">
-                              <i class="fas fa-user-plus cust" aria-hidden="true"></i>
-                                  <input type="password"  placeholder="********" class="form-control" id="Password">
-                              </div>
-                          </div>
-                          <div class="form-row">
-                              <div class="col-lg-7">
-                                  <button type="button" class="btn1 " id="login_button">Login</button>
-                              </div>
-                          </div>
-                          <a href="#">Forgot Password</a>
-                          <p>
-                              Don't have an account ?<a href="/signup"> Register now.
-                          </p>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </section>
-    
+</head>
+
+<body>
+    <section class="form my-4 mx-5">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-lg-5">
+                    <img src="../static/img/login.jpg" class="img-fluid" alt="">
+                </div>
+                <div class="col-lg-7 px-5 pt-5">
+                    <h1 class="font-weight-bold py-3">Login</h1>
+                    <h4>Sign into your account</h4>
+                    <form method="POST" action="{{ url_for('authentication_blueprint.login') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="form-row">
+                            <div class="col-lg-7">
+                                <i class="fas fa-user-plus cust" aria-hidden="true"></i>
+                                {{ form.username.label }} <!-- 显示用户名字段的标签 -->
+                                {{ form.username(class="form-control") }} <!-- 显示用户名输入框 -->
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-7">
+                                <i class="fas fa-user-plus cust" aria-hidden="true"></i>
+                                {{ form.password.label }} <!-- 显示密码字段的标签 -->
+                                {{ form.password(class="form-control") }} <!-- 显示密码输入框 -->
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-lg-7">
+                                <button type="submit" class="btn1">Login</button> <!-- 使用type="submit"来触发表单提交 -->
+                            </div>
+                        </div>
+                        <a href="#">Forgot Password</a>
+                        <p>
+                            Don't have an account ?<a href="/signup"> Register now.</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../static/js/jquery.js"></script>
     <script src="../static/js/popper.min.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
-    <script>
-        var button = document.getElementById("login_button");
-        button.addEventListener("click", function() {
-            
-            var username=document.getElementById("Username").value
-            var password=document.getElementById("Password").value
-            if (username==="admmin" && password==="admin666"){
-                window.location.href = "/welcome";
-            }
-            else if(username===""|| password===""){
-                alert("Please enter the required fields.")
-            }
-            else{
-                alert("No such user, please register first.")
-            }
-        });
+</body>
 
-
-    </script>
-  </body>
 </html>
