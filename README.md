@@ -37,7 +37,7 @@ Install each required package by commandline during development.
 
 After development, check the version of packages then write a requirements.txt.
 ```
-conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter folium scikit-learn matplotlib langdetect python-flair textblob cudatoolkit cudnn
+conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter folium scikit-learn matplotlib langdetect python-flair textblob cudatoolkit cudnn beautifulsoup4
 conda install -c "nvidia/label/cuda-11.8.0" cuda-nvcc
 conda clean --all
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118

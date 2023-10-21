@@ -18,15 +18,15 @@ def login():
 @blueprint.route('/signup', methods=['GET', 'POST'])
 def signup():
     form=SignupForm()
-    # if form.validate_on_submit():
+    if form.validate_on_submit():
     
-    #     return redirect(url_for('authentication_blueprint.login')) 
-    # return render_template('sign-up.html',form=form)
+        return redirect(url_for('authentication_blueprint.login')) 
+    return render_template('sign-up.html',form=form)
 
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     title = 'User sign up'
-    # form = SignupForm()
+    form = SignupForm()
 
     if form.validate_on_submit():
         name = form.name.data

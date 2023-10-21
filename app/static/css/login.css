@@ -1,42 +1,93 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
-body{
+body {
     background: rgb(182, 182, 182);
 }
-.row{
+.row {
     background: white;
     border-radius: 30px;
+    display: flex;
+    align-items: center;
+    animation: slide-in 1s ease-out;
 }
-img{
-    border-top-left-radius:30px;
-    border-bottom-left-radius: 30px;
-}
-.cust{
-    position: absolute;
-    margin-right: 25px;
-    margin-top: 35px;
-}
-.form-control{
-    padding: 10px;
-    margin-top: 25px;
-}
-.btn1{
-    border: none;
-    outline:none;
-    margin-top: 25px;
-    height:40px;
-    width:100%;
-    background-color:blue;
-    color:white;
-    border-radius:40px;
-    font-weight:bold;
 
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-.btn1:hover{
-    background:white;
-    border:1px solid;
-    color:black;
+
+img {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    height: 100%;
+    object-fit: cover;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 20px;
+    animation: fade-in 1s ease-out;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.form-control-label {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.form-control {
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.btn1 {
+    border: none;
+    outline: none;
+    margin-top: 25px;
+    height: 40px;
+    width: 100%;
+    background-color: blue;
+    color: white;
+    border-radius: 40px;
+    font-weight: bold;
+    animation: fade-in 1s ease-out;
+}
+
+.btn1:hover {
+    background: white;
+    border: 1px solid;
+    color: black;
+    animation: fade-in 1s ease-out;
+}
+
+.input-group-text {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+}
+
+.form-control-lg {
+    height: 40px;
 }

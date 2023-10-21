@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+<!-- <nav class="navbar navbar-expand-lg navbar-light py-4 animate__animated animate__fadeInDown" id="mainNav">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="#page-top">Rent Recommendation</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -10,4 +10,108 @@
             </ul>
         </div>
     </div>
-</nav>
+</nav> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/signup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* Your existing CSS styles here */
+        .navbar {
+            background-color: #f8f9fa;
+            padding: 10px;
+        }
+        .navbar-brand {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .navbar-nav .nav-link {
+            color: #343a40;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #007bff;
+        }
+        .navbar-toggler {
+            border-color: #007bff;
+        }
+        .navbar-toggler-icon {
+            background-color: #007bff;
+        }
+        .navbar-collapse {
+            justify-content: flex-end;
+        }
+        .navbar-nav {
+            align-items: center;
+        }
+        .nav-item {
+            margin-left: 15px;
+        }
+        .nav-item:first-child {
+            margin-left: 0;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::before {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #007bff;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        .nav-link:hover::before {
+            transform: scaleX(1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light py-4 animate__animated animate__fadeInDown" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#page-top">
+                <img src="../static/img/Birana-logos_black_short.png" alt="Rent Recommendation Logo" class="img-fluid logo" style="width: 150px; height: auto;">
+            </a>
+            <a class="navbar-brand" href="#page-top">Rent Recommendation</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/welcome">Welcome</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/userin">Getstarted</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/recomm">Recommendations</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Rest of your HTML code here -->
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/popper.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script>
+        ScrollReveal().reveal('.navbar', { delay: 200, distance: '50px', origin: 'top', duration: 1000, mobile: false });
+    </script>
+</body>
+</html>
+<!-- <nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="#">Rent Recommendation</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto my-2 my-lg-0">
+ght fixed-top p                <li class="nav-item"><a class="nav-link" href="/welcome">Welcome</a></li>
+                <li class="nav-item"><a class="nav-link" href="/userin">Get Started</a></li>
+                <li class="nav-item"><a class="nav-link" href="/recomm">Recommendations</a></li>
+            </ul>
+        </div>
+    </div>
+</nav> -->

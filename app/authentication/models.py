@@ -2,7 +2,7 @@ from flask_login import UserMixin
 from datetime import datetime
 from app import db
 
-@login.user_loader
+#@login.user_loader
 def load_user(user_id):
     return User.query.filter_by(userID=user_id).first()
 
