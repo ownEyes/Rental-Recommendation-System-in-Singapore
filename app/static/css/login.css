@@ -91,3 +91,8 @@ img {
 .form-control-lg {
     height: 40px;
 }
+.container {
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    transform: translateY(-50%); /* 调整位置 */
+  }

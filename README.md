@@ -41,6 +41,8 @@ conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt 
 conda install -c "nvidia/label/cuda-11.8.0" cuda-nvcc
 conda clean --all
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install asent
+pip install tensorflow
 ```
 # Github SSH Key Setup
 1. Make sure Git is installed in our system:
