@@ -52,7 +52,7 @@ class Recommender:
 
     def content_based_recommendation_with_diversity(self, data,user_preference):
         self.weighted_content_based_recommendation(data,user_preference)
-
+        
         pass
     
     def matrix_factorization_recommendation(self, user_id, df):
@@ -81,12 +81,5 @@ class Recommender:
         :return: Hybrid recommendation score
         """
         # Get the matrix factorization recommendation score
-        mf_score = matrix_factorization_model.predict(user_id, item_id)
-        
-        # Get the content-based recommendation score
-        cb_score = content_based_model.predict(user_id, item_id)
-        
-        # Combine the scores
-        hybrid_score = alpha * mf_score + (1 - alpha) * cb_score
-        
-        return hybrid_score
+
+        pass
