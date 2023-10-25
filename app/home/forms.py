@@ -1,6 +1,33 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, DateField, SelectField, DecimalField, BooleanField,SubmitField,SelectMultipleField, ValidationError
 from wtforms.validators import InputRequired
+from wtforms.widgets import ListWidget, CheckboxInput
+import datetime
+
+from dataclasses import dataclass
+
+@dataclass
+class FormData:
+    minprice: int
+    maxprice: int
+    importance_p: float
+    location: list
+    importance_l: float
+    roomtype: str
+    importance_t: float
+    checkin: datetime.date
+    checkout: datetime.date
+    importance_d: str
+    desired_month: int
+    public_facilities: list
+    cooking_facilities: list
+    interior_facilities: list
+    other_needs: list
+
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
 
 class SurveyForm(FlaskForm):
     minprice = DecimalField('Min. Price', validators=[InputRequired()])
@@ -16,17 +43,11 @@ class SurveyForm(FlaskForm):
     importance_t = StringField('Importance for Roomtype')
     checkin = DateField('Checkin Date', format='%Y-%m-%d', validators=[InputRequired()])
     checkout = DateField('Checkout Date', format='%Y-%m-%d', validators=[InputRequired()])
-    importance_d=StringField('Importance for Date')
-    public_facilities = SelectMultipleField( 'public_facilities',
-        choices=[('BBQ', 'BBQ'), ('gym', 'Gym'),('pool', 'Pool'),('backyard', 'Backyard')]
-    )
-    cooking_facilities = SelectMultipleField( 'cooking_facilities',
-        choices=[('refrigerator', 'Refrigerator'), ('microwave', 'Microwave'),('oven', 'Oven'),('stoven', 'Stoven')]
-    )
-    interior_facilities = SelectMultipleField( 'interior_facilities',
-        choices=[('aircon', 'Aircon'), ('dryer', 'Dryer'),('Wifi', 'Wifi'),('TV', 'TV'),('fan', 'Fan')]
-    )
-    other_needs = SelectMultipleField( 'other_needs',choices=[('pets', 'Pets')])
+    importance_d = StringField('Importance for Date')
+    public_facilities = MultiCheckboxField('Public Facilities', choices=[('BBQ', 'BBQ'), ('gym', 'Gym'), ('pool', 'Pool'), ('backyard', 'Backyard')])
+    cooking_facilities = MultiCheckboxField('Cooking Facilities', choices=[('refrigerator', 'Refrigerator'), ('microwave', 'Microwave'), ('oven', 'Oven'), ('stoven', 'Stoven')])
+    interior_facilities = MultiCheckboxField('Interior Facilities', choices=[('aircon', 'Aircon'), ('dryer', 'Dryer'), ('Wifi', 'Wifi'), ('TV', 'TV'), ('fan', 'Fan')])
+    other_needs = MultiCheckboxField('Other Needs', choices=[('pets', 'Pets')])
     submit = SubmitField('Submit')
 
     def validate_checkout(self, field):

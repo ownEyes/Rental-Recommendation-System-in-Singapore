@@ -134,111 +134,56 @@
                                     <a href="#" class="list-group-item list-group-item-action list-group-item-primary w-50 mx-auto" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Amenities
                                     </a>
-                                    <div class="dropdown-menu w-50" aria-labelledby="dropdownMenuButton">
-                                        <h6 class="dropdown-header">Public facilities</h6>
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <div class="form-check ">
-                                                    <input class="form-check-input" type="checkbox" id="BBQ" name="public_facilities" value="BBQ">
-                                                    <label class="form-check-label" for="BBQ">BBQ</label>
+                                        <div class="dropdown-menu w-50" aria-labelledby="dropdownMenuButton">
+                                            <div class="dropdown-divider"></div>
+                                            <h6 class="dropdown-header">Public facilities</h6>
+                                            <div class="row">
+                                                {% for subfield in form.public_facilities %}
+                                                <div class="col-3">
+                                                    <div class="form-check">
+                                                        {{ subfield(class="form-check-input") }}
+                                                        <label class="form-check-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="gym" name="public_facilities" value="gym">
-                                                    <label class="form-check-label" for="gym">Gym</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="pool" name="public_facilities" value="pool">
-                                                    <label class="form-check-label" for="pool">Pool</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="backyard" name="public_facilities" value="backyard">
-                                                    <label class="form-check-label" for="backyard">Backyard</label>
-                                                </div>
-                                            </div>
+                                                {% endfor %}
                                         </div>
+
                                         <div class="dropdown-divider"></div>
                                         <h6 class="dropdown-header">Cooking facilities</h6>
                                         <div class="row">
-                                            <div class="col-2">
-                                                <div class="form-check ">
-                                                    <input class="form-check-input" type="checkbox" id="kitchen" name="cooking_facilities" value="kitchen">
-                                                    <label class="form-check-label" for="kitchen">Kitchen</label>
-                                                </div>
-                                            </div>
+                                            {% for subfield in form.cooking_facilities %}
                                             <div class="col-3">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="refrigerator" name="cooking_facilities" value="refrigerator">
-                                                    <label class="form-check-label" for="refrigerator">Refrigerator</label>
+                                                    {{ subfield(class="form-check-input") }}
+                                                    <label class="form-check-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
                                                 </div>
                                             </div>
-                                            <div class="col-2">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="microwave" name="cooking_facilities" value="microwave">
-                                                    <label class="form-check-label" for="microwave">Microwave</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-2">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="oven" name="cooking_facilities" value="oven">
-                                                    <label class="form-check-label" for="oven">Oven</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-2">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="stoven" name="cooking_facilities" value="stoven">
-                                                    <label class="form-check-label" for="stoven">Stoven</label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            {% endfor %}
+                                        </div>                                        
                                         <div class="dropdown-divider"></div>
                                         <h6 class="dropdown-header">Interior facilities</h6>
                                         <div class="row">
-                                            <div class="col-2">
-                                                <div class="form-check ">
-                                                    <input class="form-check-input" type="checkbox" id="aircon" name="interior_facilities" value="aircon">
-                                                    <label class="form-check-label" for="aircon">Aircon</label>
-                                                </div>
-                                            </div>
+                                            {% for subfield in form.interior_facilities %}
                                             <div class="col-3">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="dryer" name="interior_facilities" value="dryer">
-                                                    <label class="form-check-label" for="dryer">Dryer</label>
+                                                    {{ subfield(class="form-check-input") }}
+                                                    <label class="form-check-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
                                                 </div>
                                             </div>
-                                            <div class="col-2">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="Wifi" name="interior_facilities" value="Wifi">
-                                                    <label class="form-check-label" for="Wifi">Wifi</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-2">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="TV" name="interior_facilities" value="TV">
-                                                    <label class="form-check-label" for="TV">TV</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-2">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="fan" name="interior_facilities" value="fan">
-                                                    <label class="form-check-label" for="fan">Fan</label>
-                                                </div>
-                                            </div>
+                                            {% endfor %}
                                         </div>
+
                                         <div class="dropdown-divider"></div>
                                         <h6 class="dropdown-header">Other needs</h6>
                                         <div class="row">
+                                            {% for subfield in form.other_needs %}
                                             <div class="col-3">
-                                                <div class="form-check ">
-                                                    <input class="form-check-input" type="checkbox" id="pets" name="other_needs" value="pets">
-                                                    <label class="form-check-label" for="pets">Pets</label>
+                                                <div class="form-check">
+                                                    {{ subfield(class="form-check-input") }}
+                                                    <label class="form-check-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
                                                 </div>
                                             </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -285,7 +230,7 @@
         });
 
           </script>
-          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+          <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> -->
           <!-- SimpleLightbox plugin JS-->
           <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
           <!-- Core theme JS-->

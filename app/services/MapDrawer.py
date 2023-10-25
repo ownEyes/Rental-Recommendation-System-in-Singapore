@@ -1,0 +1,117 @@
+import folium
+import json
+
+class MapDrawer:
+    def __init__(self,df,geojson_file_path,semantic_groups,colors):
+        self.map_center=[1.3521, 103.8198]
+        self.geojson_file_path=geojson_file_path
+        self.data=df
+        self.semantic_groups=semantic_groups
+        self.color_group_mapping = dict(zip(colors, semantic_groups.keys()))
+        self.map=folium.Map(location=self.map_center, tiles="OpenStreetMap", zoom_start=12)
+        self.__draw_poi()
+        self.layer=None
+        self.curr_map=self.map
+        self.curr_layer=self.layer
+        pass
+    def __draw_base(self):
+        with open(self.geojson_file_path, "r", encoding="utf-8") as file:
+            geojson_data = json.load(file)
+        folium.GeoJson(
+            geojson_data,
+            highlight_function=lambda feature: {
+                "fillColor": "white",
+                "fillOpacity": 0.2,
+            },
+
+            name="neighbourhoods",
+            style_function=lambda feature: {
+                "fillColor": "#8FA998",   
+                "color": "#5D4E6D",
+                "weight": 2,              
+                "dashArray": "5, 5",
+                "fillOpacity": 0.3        
+            },
+            zoom_on_click=True,
+            tooltip=folium.GeoJsonTooltip(fields=["neighbourhood", "neighbourhood_group"], aliases=["", ""], labels=True, sticky=False), 
+        ).add_to(self.map)
+        pass
+    def __draw_poi(self):
+        self.__draw_base()
+        for color, group in self.color_group_mapping.items():
+            columns = self.semantic_groups[group]
+            layer = folium.FeatureGroup(name=group,show=False)
+            for column in columns:
+                filtered_df = self.data[self.data[column] == True].dropna(subset=['lat', 'lng'])
+                for _, row in filtered_df.iterrows():
+                    tooltip_content = f'<b>Name:</b> {row["name"]}<br>' \
+                                    f'<b>Address:</b> {row["formatted_address"]}<br>' \
+                                    f'<b>Category:</b> {group}:{column}'
+                    folium.Circle([row['lat'], row['lng']], 
+                                        radius=2,
+                                        color=color, 
+                                        fill=True, 
+                                        fill_color=color, 
+                                        fill_opacity=0.7,
+                                        tooltip=folium.Tooltip(tooltip_content)
+                                ).add_to(layer) 
+            layer.add_to(self.map)
+        pass
+    def draw_target(self,lat, lon, radius,name):
+        self.layer=folium.FeatureGroup(name="details")
+        kw = {"prefix": "fa", "color": "blue", "icon": "arrow-down"}
+        folium.Marker(
+            [lat, lon],
+            icon=folium.Icon(**kw),
+            radius=radius,
+            color='#3186cc',
+            fill_color='#3186cc',
+            popup=name
+        ).add_to(self.layer)
+        pass 
+    def __get_frame(name, website_url, picture_url, width, height):
+        max_img_height = max(60, height - 60)
+        html_content = f"""
+            <div style="border: 1px solid #ccc; border-radius: 8px; overflow: hidden; text-align: center; width: {width}px; height: {height}px;">
+                <img src="{picture_url}" alt="Picture" style="width: 100%; height: auto; max-height: {max_img_height}px;">
+                <div style="padding: 10px;">
+                    <h3 style="margin: 5px 0; font-size: 16px;">{name}</h3>
+                    <a href="{website_url}" target="_blank" style="display: inline-block; text-decoration: none; color: #fff; background-color: #007bff; padding: 7px 15px; border-radius: 4px; font-size: 14px;">Go to Airbnb</a>
+                </div>
+            </div>
+        """
+        iframe = folium.IFrame(html=html_content, width=width + 20, height=height + 20)  # Added some padding
+        popup = folium.Popup(iframe, max_width=width + 20)
+        return popup
+
+    def add_to_map(self, lat, lon, radius,name, website_url, picture_url, width, height):
+        self.curr_map=self.map
+        self.curr_layer=self.layer
+        self.map_center=[lat, lon]
+        self.curr_map.location=self.map_center
+        
+        popup = self.__get_frame(name,website_url, picture_url, width, height)
+        kw = {"prefix": "fa", "color": "green", "icon": "house"}
+        
+        folium.Circle(
+        location=[lat, lon],
+        radius=2500,
+        color="black",
+        weight=1,
+        fill_opacity=0.2,
+        opacity=1,
+        fill_color="green",
+        fill=False,  # gets overridden by fill_color
+        # popup="{} meters".format(radius),
+        # tooltip="I am in meters",
+        ).add_to(self.curr_layer)
+        folium.Marker(
+            [lat, lon],
+            icon=folium.Icon(**kw),
+            radius=radius,
+            color='#3186cc',
+            fill_color='#3186cc',
+            popup=popup
+        ).add_to(self.curr_layer)
+        self.curr_layer.add_to(self.curr_map)
+        folium.LayerControl().add_to(self.curr_map)
