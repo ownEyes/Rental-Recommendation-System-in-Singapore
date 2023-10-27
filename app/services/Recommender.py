@@ -3,28 +3,40 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import RobustScaler,MinMaxScaler
 from collections import defaultdict
 from surprise import SVD
 from surprise import Dataset
 from surprise import accuracy
 from surprise import Reader
-
-from app.home.forms import FormData
+from surprise import dump
+import os
+# from DataManger import FormData
+from app.services.GeneticAlgorithm import genetic_algorithm
 
 class Recommender:
-    def __init__(self, MF_model=None,recommend_default_topn=10,alpha=0.5): 
-        # self.current_uid=uid
-        self.matrix_factorization_model = MF_model
-        self.recommend_num=recommend_default_topn
+    def __init__(self, modelpath,topn,alpha): 
+        self.matrix_factorization_model = None
+        self.set_MFmodel(modelpath)
+        self.recommend_num=topn
         self.popularity_recommend_result=None
         self.weighted_content_based_recommend_result=None
+        self.matrix_factorization_recommendation_result=None
+        self.matrix_factorization_recommendation_df=None
         self.content_based_recommend_result=None
+        self.content_based_recommend_with_diversity_result=None
+        self.hybrid_recommendations_result=None
         self.alpha=alpha
         self.data=None
+        self.rating=None
         self.user_preference=None
         self.weight_vector=None
-    
+        self.currUID=None
+    def set_MFmodel(self, model_path):
+        file_name = os.path.expanduser(model_path)
+        _, model = dump.load(file_name)
+        self.matrix_factorization_model=model
+
     def popularity_based_recommendation(self, df,rating_cols):
         df = df.assign(total_rating=df[rating_cols].sum(axis=1))
         sorted_df = df.sort_values(by='total_rating', ascending=False)
@@ -61,9 +73,22 @@ class Recommender:
         self.content_based_recommend_result = data.nlargest(self.recommend_num, 'similarity')
         pass
 
-    def content_based_recommendation_with_diversity(self, data,user_preference):
-        self.weighted_content_based_recommendation(data,user_preference)
-        
+    def content_based_recommendation_with_diversity(self, data,user_preference,weight_vector):
+        self.weighted_content_based_recommendation(data,user_preference,weight_vector)
+        item_features=self.weighted_content_based_recommend_result
+        item_features = item_features[item_features['weighted_similarity'] >= 0]
+        item_features_without_similarity = item_features.drop(['weighted_similarity', 'HouseID'], axis=1)
+        item_features = item_features.reset_index(drop=True)
+        similarity_matrix = cosine_similarity(item_features_without_similarity)
+
+        diversity_matrix = 1 - similarity_matrix
+        id_to_index = {row['HouseID']: index for index, row in item_features.iterrows()}
+
+
+        # for epsilon in np.linspace(0, 0.5, 1):
+        epsilon=0.2
+        recommendation, score = genetic_algorithm(item_features, epsilon, self.recommend_num,diversity_matrix,id_to_index)
+        self.content_based_recommend_with_diversity_result = item_features.loc[item_features['HouseID'].isin(recommendation)]
         pass
     
     def matrix_factorization_recommendation(self, user_id, df):
@@ -77,10 +102,12 @@ class Recommender:
             predictions[item_id] = self.matrix_factorization_model.predict(user_id, item_id, verbose=True).est
         
         recommended_items = sorted(predictions.items(), key=lambda x: x[1], reverse=True)
-        self.matrix_factorization_recommendation=[item[0] for item in recommended_items]
+        est = pd.DataFrame(recommended_items, columns=['HouseID', 'est'])
+        self.matrix_factorization_recommendation_df=est
+        self.matrix_factorization_recommendation_result=[item[0] for item in recommended_items]
         pass
     
-    def hybrid_recommendation(self,user_id, matrix_factorization_model):
+    def hybrid_recommendation(self):
         """
         Hybrid recommendation function that combines matrix factorization and content-based recommendations.
         
@@ -92,22 +119,60 @@ class Recommender:
         :return: Hybrid recommendation score
         """
         # Get the matrix factorization recommendation score
-
+        matrix_factorization_df=self.matrix_factorization_recommendation_df
+        content_based_df=self.weighted_content_based_recommend_result[['HouseID', 'weighted_similarity']]
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        matrix_factorization_df['est'] = scaler.fit_transform(matrix_factorization_df[['est']])
+        merged_df = pd.merge(matrix_factorization_df, content_based_df, on='HouseID')
+        merged_df['weighted_score'] = self.alpha * merged_df['weighted_similarity'] + (1 - self.alpha) * merged_df['est']
+        self.hybrid_recommendations_result = merged_df.sort_values(by='weighted_score', ascending=False)
         pass
     def set_param(self,weight_vector,user_vector_w,data_vector):
-        print("Setting parameters:")
-        print("Weight Vector:", weight_vector)
-        print("User Vector W:", user_vector_w)
-        print("Data Vector:", data_vector)
+        # print("Setting parameters:")
+        # print("Weight Vector:", weight_vector)
+        # print("User Vector W:", user_vector_w)
+        # print("Data Vector:", data_vector)
         self.data=data_vector
         self.user_preference=user_vector_w
         self.weight_vector=weight_vector          
-    def test_recommend(self):
-        print("Data:", self.data)
-        print("User Preference:", self.user_preference)
-        print("Weight Vector:", self.weight_vector)
+    def noRating_recommend(self):
+        # print("Data:", self.data)
+        # print("User Preference:", self.user_preference)
+        # print("Weight Vector:", self.weight_vector)
+        # self.content_based_recommendation_with_diversity(self.data,self.user_preference,self.weight_vector)
         self.weighted_content_based_recommendation(self.data,self.user_preference,self.weight_vector)
+
+    def Rating_recommend(self):
+        self.weighted_content_based_recommendation(self.data,self.user_preference,self.weight_vector)
+        self.matrix_factorization_recommendation(self.currUID,self.rating)
+        self.hybrid_recommendation()
+    
+    def recommend(self):
+        if self.currUID==None:
+            print("no rating")
+            self.noRating_recommend()
+        else:
+            print("rating")
+            self.Rating_recommend()
+
+    # def get_result_old(self):
+    #     result=self.content_based_recommend_with_diversity_result.head(self.recommend_num)
+    #     result_list=result['HouseID'].tolist()
+    #     return result_list
     
     def get_result(self):
-        result=self.weighted_content_based_recommend_result.head(self.recommend_num)
-        return result['HouseID'].tolist()
+        if self.currUID==None:
+            print("no rating")
+            result_w=self.weighted_content_based_recommend_result.head(self.recommend_num)
+            result_w_list=result_w['HouseID'].tolist()
+            # result_wd=self.content_based_recommend_with_diversity_result.head(self.recommend_num)
+            # result_wd_list=result_wd['HouseID'].tolist()
+            # merged_list = result_w_list[:int(self.recommend_num/2)] + result_wd_list[:int(self.recommend_num/2)]
+            # return merged_list
+
+            return result_w_list
+        else:
+            print("rating")
+            result=self.hybrid_recommendations_result.head(self.recommend_num)
+            result_list=result['HouseID'].tolist()
+            return result_list

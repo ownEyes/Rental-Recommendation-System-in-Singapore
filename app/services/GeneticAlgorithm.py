@@ -7,7 +7,7 @@ import dill
 import numpy as np
 
 def checkIndividual(individual, item_features, N,):
-    items = [item for item, selected in zip(item_features['id'], individual) if selected]
+    items = [item for item, selected in zip(item_features['HouseID'], individual) if selected]
     return len(items) == N
 
 
@@ -24,12 +24,12 @@ def fix_individual(individual, item_features, N, id_to_index):
         individual[idx] = 1
         # print("Added 1 at position:", idx)
     
-    selected_items = [item for item, selected in zip(item_features['id'], individual) if selected]
+    selected_items = [item for item, selected in zip(item_features['HouseID'], individual) if selected]
     for item in selected_items:
         if item not in id_to_index:
             # print("Item not in id_to_index:", item)
-            individual[item_features[item_features['id'] == item].index[0]] = 0
-            replacement = random.choice([i for i, val in enumerate(individual) if val == 0 and item_features['id'].iloc[i] in id_to_index])
+            individual[item_features[item_features['HouseID'] == item].index[0]] = 0
+            replacement = random.choice([i for i, val in enumerate(individual) if val == 0 and item_features['HouseID'].iloc[i] in id_to_index])
             individual[replacement] = 1
             # print("Replaced with item at position:", replacement)
     # print("Fixed Individual:", individual)
@@ -86,14 +86,14 @@ def diversity(items, diversity_matrix,id_to_index):
     return diversity_score
 
 def objective(items, item_features, epsilon,diversity_matrix,id_to_index):
-    similarity_score = item_features.set_index('id').loc[items]['weighted_similarity'].mean()
+    similarity_score = item_features.set_index('HouseID').loc[items]['weighted_similarity'].mean()
     diversity_score = diversity(items, diversity_matrix,id_to_index)
     weighted_score = (1 - epsilon) * similarity_score + epsilon * diversity_score
     return weighted_score 
 
 def evalSolution(individual,item_features,N, epsilon,diversity_matrix,id_to_index):
     individual = np.array(individual)  
-    selected_items = item_features['id'][individual == 1].tolist()
+    selected_items = item_features['HouseID'][individual == 1].tolist()
     if len(selected_items) != N:
         return -np.inf,  
     missing_items = [item for item in selected_items if item not in id_to_index]
@@ -104,8 +104,8 @@ def evalSolution(individual,item_features,N, epsilon,diversity_matrix,id_to_inde
     return objective(selected_items, item_features, epsilon,diversity_matrix,id_to_index),
 
 def initIndividual(item_features, N,individual_creator):
-    items = random.sample(item_features['id'].tolist(), N)
-    individual = [1 if item in items else 0 for item in item_features['id']]
+    items = random.sample(item_features['HouseID'].tolist(), N)
+    individual = [1 if item in items else 0 for item in item_features['HouseID']]
     return individual_creator(individual)
 
 def genetic_algorithm(item_features, epsilon, N,diversity_matrix,id_to_index):
@@ -124,13 +124,13 @@ def genetic_algorithm(item_features, epsilon, N,diversity_matrix,id_to_index):
         toolbox.register("select", tools.selTournament, tournsize=3)
         
         population = toolbox.population(n=5)
-        algorithms.eaSimple(population, toolbox, cxpb=0.7, mutpb=0.2, ngen=40, verbose=False)
+        algorithms.eaSimple(population, toolbox, cxpb=0.7, mutpb=0.2, ngen=50, verbose=False)
     
     top1 = tools.selBest(population, 1)[0]
     # print("Top 1 Individual:", top1)
     # print("Number of 1s in Top 1:", sum(top1))
     selected_indices = [i for i, val in enumerate(top1) if val == 1]
-    selected_items = item_features.loc[selected_indices, 'id'].tolist()
+    selected_items = item_features.loc[selected_indices, 'HouseID'].tolist()
 
     # print("Selected Items:", selected_items)
     return selected_items, top1.fitness.values[0]

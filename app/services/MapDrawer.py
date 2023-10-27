@@ -2,12 +2,12 @@ import folium
 import json
 
 class MapDrawer:
-    def __init__(self,df,geojson_file_path,semantic_groups,colors):
-        self.map_center=[1.3521, 103.8198]
+    def __init__(self,df,mapcenter,geojson_file_path,semantic_groups,colors):
+        self.map_center=mapcenter
         self.geojson_file_path=geojson_file_path
         self.data=df
         self.semantic_groups=semantic_groups
-        self.color_group_mapping = dict(zip(colors, semantic_groups.keys()))
+        self.color_group_mapping = dict(zip(colors, self.semantic_groups.keys()))
         self.map=None
         self.layer_list=[]
         self.__draw_poi()
@@ -70,7 +70,7 @@ class MapDrawer:
             radius=radius,
             color='#3186cc',
             fill_color='#3186cc',
-            popup=name
+            popup=name.title()
         )
         pass 
     def __get_frame(self,name, website_url, picture_url, width, height):

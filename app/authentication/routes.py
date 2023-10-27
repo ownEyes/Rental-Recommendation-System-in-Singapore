@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,jsonify
+from flask import Flask, render_template, request, redirect, url_for,flash,jsonify,current_app
 from flask_login import current_user
 from sqlalchemy.sql import func
 
@@ -6,20 +6,12 @@ from app import bcrypt,db
 from app.authentication import blueprint
 from app.authentication.form import LoginForm,SignupForm
 from app.authentication.models import User
+from app.home.models import Rating
+from app.services.DataProcessing import *
 
 @blueprint.route('/login',methods=['Get','POST'])
 def login():
     form =LoginForm()
-    # if form.validate_on_submit():
-    #     username = form.username.data
-    #     password = form.password.data
-    #     user = User.query.filter_by(username=username).first()
-    #     if user:
-    #         if bcrypt.check_password_hash(user.password, password):
-    #             flash('Logged in successfully!', category='success')
-    #             return redirect(url_for('home'))
-    #         else:
-    #             flash('Incorrect password, try again.', category='error')
     return render_template('login.html',form=form)
 @blueprint.route('/signup', methods=['POST','GET'])
 def signup():
@@ -100,6 +92,15 @@ def submit_login():
         print("User found:", user.userName)
         print("Stored password hash:", user.password)
         if bcrypt.check_password_hash(user.password, password):
+            checker=Rating.query.filter_by(userID=user.userID).first()
+            if checker:
+                print("rating exists")
+                current_app.recommender.currUID=user.userID
+                ratingInfo=get_ratings()
+                current_app.recommender.rating=ratingInfo
+            else:
+                print("rating not exists")
+                current_app.recommender.currUID=None
             # print(users[username] == password)
             #return'welcome'
             return jsonify({'result': 'success', 'message': 'Welcome!'})
