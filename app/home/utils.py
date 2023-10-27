@@ -2,7 +2,11 @@ import numpy as np
 import requests
 import json
 from app.config import GEOCODING_APIKEY
+# from dotenv import load_dotenv
 
+# # load_dotenv()
+
+# GEOCODING_APIKEY=os.getenv('GEOCODING_APIKEY', None)
 def get_geocoding(location):
 	url = f'https://maps.googleapis.com/maps/api/geocode/json'
 	parameters = {
@@ -23,7 +27,7 @@ def get_geocoding(location):
 			return 1
 	else:
 		print('Request failed with status code:', response.status_code)
-		return 1
+		return 0
 	
 def get_reverseGeocoding(coordinates):
 	url = f'https://maps.googleapis.com/maps/api/geocode/json'

@@ -6,8 +6,8 @@ from flask_login import UserMixin
 db = SQLAlchemy()
 
 class RentalHouse(db.Model):
-    __tablename__ = 'RentalHouse'
-    HouseID = db.Column(db.Integer, primary_key=True, nullable=False)
+    # __tablename__ = 'RentalHouse'
+    HouseID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
     HouseName = db.Column(db.Text, nullable=False)
     details = db.Column(db.Text, nullable=False)
     neighbourhood_cleansed = db.Column(db.Text, nullable=False)
@@ -54,27 +54,28 @@ class RentalHouse(db.Model):
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'user'
-    userID = db.Column(db.Integer, primary_key=True)
+    # __tablename__ = 'user'
+    userID = db.Column(db.Integer, primary_key=True,autoincrement=True)
     userName = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.userName
 
     def get_id(self):
         return self.userID
 
 class Rating(db.Model):
-    __tablename__ = 'rating'
-    userID = db.Column(db.Integer, primary_key=True)
-    listing_id = db.Column(db.Integer, primary_key=True)
+    # __tablename__ = 'rating'
+    ratingID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    userID = db.Column(db.Integer)
+    listing_id = db.Column(db.Integer)
     rating = db.Column(db.Integer)
     comments=db.Column(db.Text)
 
 class Poi(db.Model):
-    __tablename__ = 'poi'
-    POIid = db.Column(db.Integer, primary_key=True)
+    # __tablename__ = 'poi'
+    POIid = db.Column(db.Integer, primary_key=True,autoincrement=True)
     name= db.Column(db.String)
     lat= db.Column(db.Float)
     lng= db.Column(db.Float)

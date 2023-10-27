@@ -66,7 +66,7 @@ def get_reverseGeocoding(coordinates):
 			return 1
 	else:
 		print('Request failed with status code:', response.status_code)
-		return 1
+		return 0
 
 if __name__ == "__main__":
 	# test=get_geocoding("shanghai")

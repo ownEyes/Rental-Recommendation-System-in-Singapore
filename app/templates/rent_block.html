@@ -30,7 +30,7 @@
     <div class="card" style="background-color: antiquewhite;">
         <div class="row ">
             <div class="col-4">
-                <img class="card-img rounded w-100 img-fluid" src="https://a0.muscache.com/pictures/miso/Hosting-47945703/original/2abc9c45-bace-4047-8864-548efe50b911.jpeg" alt="Card image cap">
+                <img class="card-img rounded w-100 img-fluid"  src="{{ rent.img_src }} " alt="{{ rent.img_src }} ">
             </div>
             <div class="col-8">
                 <div class="card-heading">
@@ -93,7 +93,7 @@
                             </div>
                          
                             <div class="col-3">
-                                <div class="col-12 custom-box dropdown" id="other_button_{{ rent.id }}">
+                                <div class="col-10 custom-box dropdown" id="other_button_{{ rent.id }}">
                                     Others
                                     <div class="dropdown-content">
                                         <div id="other_data">
@@ -106,12 +106,12 @@
                         </div>
                 </div>
                   
-                        <br>
+                        <!-- <br> -->
                         <div class="row">
                             <h5 class="col-12">{{ rent.price }}</h5>
                             <h6 class="col-12">{{ rent.distance_to_mrt }} </h6>
                             <h6 class="col-12">{{ rent.mall_info }} </h6>
-                            <h6 class="col-12"><a href="/map_with_marker">{{ rent.location_info }}</a></h6>
+                            <h6 class="col-12"><a href="{{rent.location_href}}" target="_blank">{{ rent.location_info }}</a></h6>
                         </div>
                     </div>      
                 </div>

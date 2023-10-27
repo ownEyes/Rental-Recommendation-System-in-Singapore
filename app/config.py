@@ -1,10 +1,17 @@
 import os, random, string
+from dotenv import load_dotenv
 
-GEOCODING_APIKEY=os.getenv('GEOCODING_APIKEY', None)
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+dotenv_path = os.path.join(basedir, '.env')
+load_dotenv(dotenv_path)
+GEOCODING_APIKEY = os.getenv('GEOCODING_APIKEY', None)
+
 
 class Config(object):
 
     basedir = os.path.abspath(os.path.dirname(__file__))
+
 
     # Assets Management
     ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')  
@@ -50,7 +57,7 @@ class Config(object):
     if USE_SQLITE:
 
         # This will create a file in <app> FOLDER
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database', 'database.db')
     
 class ProductionConfig(Config):
     DEBUG = False

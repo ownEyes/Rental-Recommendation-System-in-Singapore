@@ -8,13 +8,17 @@ class MapDrawer:
         self.data=df
         self.semantic_groups=semantic_groups
         self.color_group_mapping = dict(zip(colors, semantic_groups.keys()))
-        self.map=folium.Map(location=self.map_center, tiles="OpenStreetMap", zoom_start=12)
+        self.map=None
+        self.layer_list=[]
         self.__draw_poi()
-        self.layer=None
-        self.curr_map=self.map
-        self.curr_layer=self.layer
+        
+        # self.layer=None
+        # self.tar_point=None
+        # self.curr_map=self.map
+        # self.curr_layer=None
         pass
     def __draw_base(self):
+        self.map=folium.Map(location=self.map_center, tiles="OpenStreetMap", zoom_start=14)
         with open(self.geojson_file_path, "r", encoding="utf-8") as file:
             geojson_data = json.load(file)
         folium.GeoJson(
@@ -55,21 +59,21 @@ class MapDrawer:
                                         fill_opacity=0.7,
                                         tooltip=folium.Tooltip(tooltip_content)
                                 ).add_to(layer) 
-            layer.add_to(self.map)
+            self.layer_list.append(layer)
         pass
     def draw_target(self,lat, lon, radius,name):
-        self.layer=folium.FeatureGroup(name="details")
-        kw = {"prefix": "fa", "color": "blue", "icon": "arrow-down"}
-        folium.Marker(
+        # self.tar_map=self.map
+        kw = {"prefix": "fa", "color": "red", "icon": "arrow-down"}
+        self.tar_point=folium.Marker(
             [lat, lon],
             icon=folium.Icon(**kw),
             radius=radius,
             color='#3186cc',
             fill_color='#3186cc',
             popup=name
-        ).add_to(self.layer)
+        )
         pass 
-    def __get_frame(name, website_url, picture_url, width, height):
+    def __get_frame(self,name, website_url, picture_url, width, height):
         max_img_height = max(60, height - 60)
         html_content = f"""
             <div style="border: 1px solid #ccc; border-radius: 8px; overflow: hidden; text-align: center; width: {width}px; height: {height}px;">
@@ -84,11 +88,17 @@ class MapDrawer:
         popup = folium.Popup(iframe, max_width=width + 20)
         return popup
 
-    def add_to_map(self, lat, lon, radius,name, website_url, picture_url, width, height):
-        self.curr_map=self.map
-        self.curr_layer=self.layer
+    def add_to_map(self, lat, lon, radius,name, website_url, picture_url, width=300, height=300):
+        
+        
+        self.__draw_base()
+        map =self.map
+        for layer in self.layer_list:
+                layer.add_to(map)
+        layer=folium.FeatureGroup(name="details")
+        self.tar_point.add_to(layer)
         self.map_center=[lat, lon]
-        self.curr_map.location=self.map_center
+        map.location=self.map_center
         
         popup = self.__get_frame(name,website_url, picture_url, width, height)
         kw = {"prefix": "fa", "color": "green", "icon": "house"}
@@ -98,13 +108,13 @@ class MapDrawer:
         radius=2500,
         color="black",
         weight=1,
-        fill_opacity=0.2,
+        fill_opacity=0.1,
         opacity=1,
-        fill_color="green",
+        fill_color="yellow",
         fill=False,  # gets overridden by fill_color
         # popup="{} meters".format(radius),
         # tooltip="I am in meters",
-        ).add_to(self.curr_layer)
+        ).add_to(layer)
         folium.Marker(
             [lat, lon],
             icon=folium.Icon(**kw),
@@ -112,6 +122,7 @@ class MapDrawer:
             color='#3186cc',
             fill_color='#3186cc',
             popup=popup
-        ).add_to(self.curr_layer)
-        self.curr_layer.add_to(self.curr_map)
-        folium.LayerControl().add_to(self.curr_map)
+        ).add_to(layer)
+        layer.add_to(map)
+        folium.LayerControl(collapsed=False).add_to(map)
+        return map

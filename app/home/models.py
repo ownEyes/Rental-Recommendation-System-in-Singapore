@@ -1,11 +1,11 @@
 from flask_login import UserMixin
 from datetime import datetime
 
-from app import db
+from app.extension import db
 
 class RentalHouse(db.Model):
-    __tablename__ = 'RentalHouse'
-    HouseID = db.Column(db.Integer, primary_key=True, nullable=False)
+    # __tablename__ = 'RentalHouse'
+    HouseID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
     HouseName = db.Column(db.Text, nullable=False)
     details = db.Column(db.Text, nullable=False)
     neighbourhood_cleansed = db.Column(db.Text, nullable=False)
@@ -51,15 +51,16 @@ class RentalHouse(db.Model):
 
 
 class Rating(db.Model):
-    __tablename__ = 'rating'
-    userID = db.Column(db.Integer, primary_key=True)
-    listing_id = db.Column(db.Integer, primary_key=True)
+    # __tablename__ = 'rating'
+    ratingID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    userID = db.Column(db.Integer)
+    listing_id = db.Column(db.Integer)
     rating = db.Column(db.Integer)
     comments=db.Column(db.Text)
 
 class Poi(db.Model):
-    __tablename__ = 'poi'
-    POIid = db.Column(db.Integer, primary_key=True)
+    # __tablename__ = 'poi'
+    POIid = db.Column(db.Integer, primary_key=True,autoincrement=True)
     name= db.Column(db.String)
     lat= db.Column(db.Float)
     lng= db.Column(db.Float)

@@ -1,19 +1,22 @@
 import pandas as pd
+from flask import current_app
 from typing import List, Optional, Type
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict
-
-from app import db
+from flask_sqlalchemy import Model
+# from app import db
 from app.authentication.models import User
 from app.home.models import Rating, RentalHouse, Poi, Recommendation
 
 
-class DataManager:
-    def __init__(self, db):
-        self.db = db
 
-    def get_by_id(self, model: Type[db.Model], id: int) -> Optional[db.Model]:
+class DataManager:
+    def __init__(self):
+        self.db = current_app.extensions['sqlalchemy'].db
+        # self.Model = self.db.Model
+
+    def get_by_id(self, model: Type[Model], id: int) -> Optional[Model]:
         """Get a single object by its ID."""
         try:
             return self.db.session.query(model).filter_by(id=id).first()
@@ -21,7 +24,7 @@ class DataManager:
             print(f"Error getting {model.__name__} by ID: {e}")
             return None
 
-    def add(self, obj: db.Model) -> bool:
+    def add(self, obj: Model) -> bool:
         """Add an object to the database."""
         try:
             self.db.session.add(obj)
@@ -44,15 +47,15 @@ class DataManager:
         """Get a poi by ID."""
         return self.get_by_id(Poi, poi_id)
 
-    def get_df_by_ids(self, model: db.Model, ids: List[int]) -> pd.DataFrame:
+    def get_df_by_ids(self, model: Type[DeclarativeMeta], ids: List[int], id_column_name: str) -> pd.DataFrame:
         """Get records by a list of IDs."""
-        query = self.db.session.query(model).filter(model.id.in_(ids))
+        query = self.db.session.query(model).filter(getattr(model, id_column_name).in_(ids))
         df = pd.read_sql(query.statement, self.db.engine)
         return df
 
-    def get_recommends(self, house_ids: List[int]) -> pd.DataFrame:
+    def get_recommends(self, house_ids: List[int], id_column_name: str = 'id') -> pd.DataFrame:
         """Get rentalhouses by a list of IDs."""
-        return self.get_by_ids(RentalHouse, house_ids)
+        return self.get_df_by_ids(RentalHouse, house_ids, id_column_name)
     
     # def get_columns_by_ids(self, model: db.Model, ids: List[int], columns: List[str]) -> pd.DataFrame:
     #     """Get specific columns of records by a list of IDs."""
@@ -82,7 +85,7 @@ class DataManager:
         """Get specific columns of all rows in a table."""
         return self.get_df_from_columns(Poi, columns)
     
-    def update_object_by_id(self, model: db.Model, primary_key_name: str, object_id: int, **kwargs) -> bool:
+    def update_object_by_id(self, model: Model, primary_key_name: str, object_id: int, **kwargs) -> bool:
         """Update an object in the database by ID."""
         try:
 
