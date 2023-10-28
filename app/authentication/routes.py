@@ -1,13 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,jsonify,current_app
+from flask import render_template, request, redirect, url_for,flash,jsonify
 from flask_login import current_user
-from sqlalchemy.sql import func
 
-from app import bcrypt,db
+from flask_login import login_user, current_user
+
+from app.extension import db,bcrypt
 from app.authentication import blueprint
 from app.authentication.form import LoginForm,SignupForm
-from app.authentication.models import User
-from app.home.models import Rating
-from app.services.DataProcessing import *
+# from app.authentication.models import User
+
 
 @blueprint.route('/login',methods=['Get','POST'])
 def login():
@@ -21,6 +21,7 @@ def signup():
 
 @blueprint.route('/collect_data', methods=['POST'])
 def collect_data():
+    from app.authentication.models import User
     form= SignupForm()
     if form.validate_on_submit():
         print("-----------start query test:house-----------")
@@ -76,10 +77,11 @@ def collect_data():
         flash('Successfully registered!', category='success')
         return redirect(url_for('home'))
     return render_template('sign-up.html', form=form, title=title, signup=True)
-users={'admmin':'admin666','hola':'holly'}
+# users={'admmin':'admin666','hola':'holly'}
 @blueprint.route('/submit_login', methods=['Get','POST'])
 def submit_login():
-    
+    from app.authentication.models import User
+    from app.services.DataProcessing import df_to_amenities,get_ratings
     # username = loginForm.username.data
     # password = loginForm.password.data
     username = request.form.get('Username')
@@ -89,20 +91,11 @@ def submit_login():
     print(username,password)
     user = User.query.filter_by(userName=username).first()
     if user:
+        
         print("User found:", user.userName)
         print("Stored password hash:", user.password)
         if bcrypt.check_password_hash(user.password, password):
-            checker=Rating.query.filter_by(userID=user.userID).first()
-            if checker:
-                print("rating exists")
-                current_app.recommender.currUID=user.userID
-                ratingInfo=get_ratings()
-                current_app.recommender.rating=ratingInfo
-            else:
-                print("rating not exists")
-                current_app.recommender.currUID=None
-            # print(users[username] == password)
-            #return'welcome'
+            login_user(user)
             return jsonify({'result': 'success', 'message': 'Welcome!'})
         else:
             #return 'login'

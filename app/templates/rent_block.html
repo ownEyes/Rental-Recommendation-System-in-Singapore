@@ -23,7 +23,47 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
+        .comment-form {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .comment-form button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background-color: #45a049;
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function toggleCommentForm() {
+                var form = document.querySelector('.comment-form');
+                if (form.style.display === 'none' || form.style.display === '') {
+                    form.style.display = 'block';
+                } else {
+                    form.style.display = 'none';
+                }
+            }
+            window.toggleCommentForm = toggleCommentForm; // Expose to global scope
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -115,6 +155,31 @@
                         </div>
                     </div>      
                 </div>
+                <button type="button" onclick="toggleCommentForm()">Write a comment</button>
+
+                <!-- 隐藏的评论表单 -->
+                <div class="comment-form" style="display: none;">
+                    <h3>Write a comment</h3>
+                    <form method="post" action="{{ url_for('home_blueprint.get_comment', recomm_idx=recomm_idx) }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- 渲染评论字段 -->
+                        <div class="form-group">
+                            {{ form.comment.label(class="form-control-label") }}
+                            {{ form.comment(class="form-control", rows=3) }}
+                            {% if form.comment.errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.comment.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- 提交按钮 -->
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -126,3 +191,4 @@
 </div>
 </body>
 </html>
+    

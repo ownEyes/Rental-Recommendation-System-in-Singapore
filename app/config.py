@@ -65,7 +65,24 @@ class Config(object):
     
     GEOJSON_FILE_PATH = os.path.join(basedir,'database', "neighbourhoods.geojson")
 
+    RF_MODEL_PATH=os.path.join(basedir,'models', "RatingEstimation_random_forest_model.joblib")
+
     MF_MODEL_PATH=os.path.join(basedir,'models', "SVD_matrix_factorization_model.surprise")
+
+    SVD_PARAM={
+        'n_factors': 100, 
+        'n_epochs': 50, 
+        'lr_all': 0.007, 
+        'reg_all': 0.02, 
+        'lr_bu': 0.005, 
+        'lr_bi': 0.005, 
+        'reg_bu': 0.02, 
+        'reg_bi': 0.01, 
+        'lr_pu': 0.01, 
+        'lr_qi': 0.01, 
+        'reg_pu': 0.01, 
+        'reg_qi': 0.02
+    } 
 
     RECOMMEND_DEFAULT_TOPN=10
 

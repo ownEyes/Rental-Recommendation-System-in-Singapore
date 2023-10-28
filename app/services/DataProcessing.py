@@ -1,15 +1,16 @@
 import numpy as np
 import pandas as pd
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import RobustScaler
-from app.services.DataManger import DataManager
-from app.services.MapDrawer import MapDrawer
+# from app.services.DataManger import DataManager
+# from app.services.MapDrawer import MapDrawer
 
 from flask import current_app
 
-from app.services.DataManger import FormData,Rental
+# from app.services.DataManger import FormData,Rental
+from app.services.DataManger import Rental
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371  
@@ -165,3 +166,4 @@ def get_ratings():
     rating_info.columns = ['user_id','item_id','rating']
     rating_info = rating_info.drop(rating_info[rating_info.rating == 0].index)
     return rating_info
+

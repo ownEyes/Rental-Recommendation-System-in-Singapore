@@ -1,13 +1,10 @@
 import random
-import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import RobustScaler,MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 from collections import defaultdict
 from surprise import SVD
 from surprise import Dataset
-from surprise import accuracy
 from surprise import Reader
 from surprise import dump
 import os
@@ -15,10 +12,13 @@ import os
 from app.services.GeneticAlgorithm import genetic_algorithm
 
 class Recommender:
-    def __init__(self, modelpath,topn,alpha): 
+    def __init__(self, modelpath,topn,alpha,svd_param): 
         self.matrix_factorization_model = None
+        self.mode=None
+        self.modelpath=modelpath
         self.set_MFmodel(modelpath)
         self.recommend_num=topn
+        self.svd_param=svd_param
         self.popularity_recommend_result=None
         self.weighted_content_based_recommend_result=None
         self.matrix_factorization_recommendation_result=None
@@ -148,7 +148,7 @@ class Recommender:
         self.hybrid_recommendation()
     
     def recommend(self):
-        if self.currUID==None:
+        if self.mode=="content_based":
             print("no rating")
             self.noRating_recommend()
         else:
@@ -161,7 +161,7 @@ class Recommender:
     #     return result_list
     
     def get_result(self):
-        if self.currUID==None:
+        if self.mode=="content_based":
             print("no rating")
             result_w=self.weighted_content_based_recommend_result.head(self.recommend_num)
             result_w_list=result_w['HouseID'].tolist()
@@ -176,3 +176,11 @@ class Recommender:
             result=self.hybrid_recommendations_result.head(self.recommend_num)
             result_list=result['HouseID'].tolist()
             return result_list
+        
+    def model_update(self,df):
+        algo = SVD(**self.svd_param)
+        reader = Reader(rating_scale=(0,5)) # assumes datafile contains: user, item, ratings (in this order)
+        data = Dataset.load_from_df(df, reader)
+        self.matrix_factorization_model = algo.fit(data.build_full_trainset())
+        dump.dump(self.modelpath, algo=self.matrix_factorization_model)
+        pass

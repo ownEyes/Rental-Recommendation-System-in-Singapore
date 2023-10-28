@@ -6,22 +6,21 @@ Copyright (c) 2019 - present AppSeed.us
 import os
 
 from flask import Flask
-from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
 # from flask_bootstrap import Bootstrap5
-from flask_bcrypt import Bcrypt
+
 from importlib import import_module
 
 from flask_wtf.csrf import CSRFProtect
-from app.extension import db
+from app.extension import db,bcrypt,login_manager
 from app.services.DataManger import DataManager
 from app.services.MapDrawer import MapDrawer
 from app.services.Recommender import Recommender
+from app.services.RatingEstimator import RatingEstimator
 
 # bootstrap = Bootstrap5()
-login_manager = LoginManager()
+
 csrf = CSRFProtect()
-bcrypt = Bcrypt()
+
 # db = SQLAlchemy()
 # logger = logging.getLogger("my_logger")
 
@@ -39,11 +38,7 @@ def register_extensions(app):
     db.init_app(app)
     csrf.init_app(app)
     bcrypt.init_app(app)
-    
-
-    # bootstrap.init_app(app)
-    
-    #login_manager.init_app(app)
+    login_manager.init_app(app)
 
 
 def register_blueprints(app):
@@ -82,10 +77,14 @@ def register_services(app):
     colors=app.config['COLORS']
     app.map_drawer = MapDrawer(poi_df,mapcenter,geojson_file_path,semantic_groups,colors)
 
-    modelpath=app.config['MF_MODEL_PATH']
+    MF_modelpath=app.config['MF_MODEL_PATH']
     topn=app.config['RECOMMEND_DEFAULT_TOPN']
     alpha=app.config['ALPHA']
-    app.recommender = Recommender(modelpath,topn,alpha)
+    svd_param=app.config['SVD_PARAM']
+    app.recommender = Recommender(MF_modelpath,topn,alpha,svd_param)
+    RF_modelpath=app.config['RF_MODEL_PATH']
+    app.rating_estimator = RatingEstimator(RF_modelpath)
+
 
 def create_app(config):
     app = Flask(__name__)

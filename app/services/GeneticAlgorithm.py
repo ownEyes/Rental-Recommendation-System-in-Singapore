@@ -1,9 +1,9 @@
-from itertools import combinations
+
 from deap import base, creator, tools, algorithms
 import random
 from functools import partial
 import multiprocessing
-import dill
+
 import numpy as np
 
 def checkIndividual(individual, item_features, N,):

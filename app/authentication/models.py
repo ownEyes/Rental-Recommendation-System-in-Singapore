@@ -1,9 +1,9 @@
 from flask_login import UserMixin
-from datetime import datetime
-from app.extension import db
-# #@login.user_loader
-# def load_user(user_id):
-#     return User.query.filter_by(userID=user_id).first()
+from app.extension import db,login_manager
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.filter_by(userID=user_id).first()
 
 
 class User(db.Model, UserMixin):

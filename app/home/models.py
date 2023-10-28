@@ -1,6 +1,3 @@
-from flask_login import UserMixin
-from datetime import datetime
-
 from app.extension import db
 
 class RentalHouse(db.Model):
@@ -55,7 +52,7 @@ class Rating(db.Model):
     ratingID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userID = db.Column(db.Integer)
     listing_id = db.Column(db.Integer)
-    rating = db.Column(db.Integer)
+    rating = db.Column(db.Float)
     comments=db.Column(db.Text)
 
 class Poi(db.Model):

@@ -1,9 +1,7 @@
 from flask_wtf import FlaskForm
-from flask import current_app
-from wtforms import StringField, IntegerField, DateField, SelectField, DecimalField, BooleanField,SubmitField,SelectMultipleField, ValidationError
-from wtforms.validators import InputRequired
-from wtforms.widgets import ListWidget, CheckboxInput
-import datetime
+from wtforms import StringField, SubmitField,SelectMultipleField,TextAreaField
+from wtforms.validators import DataRequired
+
 
 class SurveyForm(FlaskForm):
     minprice = StringField("minprice")
@@ -32,4 +30,8 @@ class SurveyForm(FlaskForm):
     #     'kitchen_facilities',
     #     choices=[('microwave', 'Microwave'), ('pot', 'Pot')]
     # )
+    submit = SubmitField('Submit')
+
+class CommentForm(FlaskForm):
+    comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField('Submit')

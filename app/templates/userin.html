@@ -460,7 +460,7 @@
                     } 
                 }
                 
-                $("#userin").submit(function(e) {
+                $("#userin").off('submit').submit(function(e) {
                     e.preventDefault();
                     var serializedData = $(this).serialize();
                     var p_ratingValue = $("#pricerating").val(); 

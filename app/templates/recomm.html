@@ -85,7 +85,9 @@
         
         <h2 class="mb-4 text-center">Here are the recommendations based on your preferences</h2>
         {% for rent in rents %}
-            {% include 'rent_block.html' %}
+        {% with rent=rent, recomm_idx=loop.index, form=form %}
+                {% include 'rent_block.html' %}
+            {% endwith %}
         {% endfor %}
 
             
