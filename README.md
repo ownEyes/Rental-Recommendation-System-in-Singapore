@@ -40,6 +40,11 @@ After development, check the version of packages then write a requirements.txt.
 conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter folium scikit-learn matplotlib langdetect python-flair textblob deap scikit-surprise dill
 pip install asent
 ```
+or run:
+```
+conda install --file requirements.txt
+```
+
 # Github SSH Key Setup
 1. Make sure Git is installed in our system:
     ```
