@@ -38,7 +38,7 @@
                 width: 110px;
             }
            </style>
-        <title></title>
+           <title>Find your own space</title>
     </head>
     <body>
         <div id="mainNav"></div>
@@ -105,10 +105,10 @@
                             <div class="col-3">
                                 <select name="roomtype" class="form-control" id="roomtype" > 
                                      <option value="" disabled selected></option>  
-                                     <option value="EntireHome/apt">Entire home/apt(Retype min&max price in<br>the form of a block lease)</option>
-                                     <option value="HotelRoom">Hotel room</option>
-                                     <option value="PrivateRoom">Private room</option>
-                                     <option value="SharedRoom">Shared room</option>
+                                     <option value="Entire home/apt">Entire home/apt(Retype min&max price in<br>the form of a block lease)</option>
+                                     <option value="Hotel room">Hotel room</option>
+                                     <option value="Private room">Private room</option>
+                                     <option value="Shared room">Shared room</option>
                                 </select>
                             </div>
                         </div>
@@ -126,24 +126,15 @@
                             <label for="datepickerin" class="col-1 col-form-label text-right">Checkin Date:</label>
                             <div class="col-1">
                                 <div class="input-daterange">
-                                    <input type="text" name="checkin" id="checkin" class="form-control wide-input" placeholder="Start">
+                                    <input type="text" name="checkin" id="checkin" class="form-control wide-input" placeholder="Start" onchange="updateDayDifference()">
                                 </div>
                             </div>
                         
                             <label for="datepickerout" class="col-1 col-form-label text-right">Checkout Date:</label>
                             <div class="col-1">
                                 <div class="input-daterange">
-                                    <input type="text" name="checkout" id="checkout" class="form-control wide-input" placeholder="End">
+                                    <input type="text" name="checkout" id="checkout" class="form-control wide-input" placeholder="End" onchange="updateDayDifference()">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row align-items-center justify-content-center">
-                            <div class ="col-2">
-                                <label for="periodrating" class="col-form-label text-right">Importance for Location:</label>
-                            </div>
-                            <div class="col-3">
-                                <input id="periodrating" value="" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
-                            title="" name="importance_d">
                             </div>
                         </div>
                         <div class="container mt-5">
@@ -260,6 +251,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group row align-items-center justify-content-center">
+                                    <div class ="col-2">
+                                        <label for="amenitiesrating" class="col-form-label text-right">Importance for Amenities:</label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input id="amenitiesrating" value="" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
+                                    title="" name="importance_a">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="mb-100" style="background-color: white;">
@@ -274,6 +274,19 @@
                 </div>
             </div>
         </section>
+        <script>
+            function updateDayDifference() {
+              var checkinInput = document.getElementById("checkin");
+              var checkoutInput = document.getElementById("checkout");
+              var checkinDate = new Date(checkinInput.value);
+              var checkoutDate = new Date(checkoutInput.value);
+              var checkinDate1 = checkinDate.getTime();
+              var checkoutDate1 = checkoutDate.getTime();
+              var timeDiff = Math.abs(checkoutDate1 - checkinDate1);
+              var dayDifference = Math.ceil(timeDiff / (1000 * 3600 * 24));
+              document.getElementById("dayDifference").value = dayDifference;
+            }
+          </script>          
         <script>
             document.addEventListener('DOMContentLoaded', function() {
             fetch('/nav')
@@ -379,15 +392,24 @@
                     $("#locationrating").rating("update", this.value); 
                     }
                 });
-                $("#periodrating").rating();
+                $("#typerating").rating();
                   // trap the select change event to execute a rating method
-                $("#d_rating_changer").on("change", function() {
+                $("#t_rating_changer").on("change", function() {
                     if (this.value == "") {
-                        $("#periodrating").rating("clear");
+                        $("#typerating").rating("clear");
                     } else { 
-                        $("##periodrating").rating("update", this.value); 
+                        $("##typerating").rating("update", this.value); 
                     }
                 });  
+                $("#amenitiesrating").rating();
+                  // trap the select change event to execute a rating method
+                $("#a_rating_changer").on("change", function() {
+                    if (this.value == "") {
+                        $("#amenitiesrating").rating("clear");
+                    } else { 
+                        $("##amenitiesrating").rating("update", this.value); 
+                    }
+                }); 
             });
             jQuery(document).ready(function(){ 
                 function handleFormSubmission(formData) {
@@ -412,9 +434,9 @@
                     if (minprice === "" || maxprice === "" || location === "" || startdate === "" || enddate === "" || roomtype === "" ) {
                         alert("Please finish all the blanks!");
                     }
-                    else if(input1==input2 || input2==input3 || input1==input3){
-                                alert("Please ensure that importance values are different!")     
-                            }
+                    // else if(input1==input2 || input2==input3 || input1==input3){
+                    //             alert("Please ensure that importance values are different!")     
+                    //         }
                     // else if(minprice>maxprice){
                     //     alert("Please type in correct price range!")
                     // }
@@ -438,16 +460,19 @@
                     } 
                 }
                 
-                $("#userin").submit(function(e) {
+                $("#userin").off('submit').submit(function(e) {
                     e.preventDefault();
                     var serializedData = $(this).serialize();
                     var p_ratingValue = $("#pricerating").val(); 
                     var l_ratingValue = $("#locationrating").val();
-                    var d_ratingValue = $("#periodrating").val();
+                    var t_ratingValue = $("#typerating").val();
+                    var a_ratingValue = $("#amenitiesrating").val();
                     var formData = $(this).serialize(); 
                     formData += "&p_rating=" + p_ratingValue;
                     formData += "&l_rating=" + l_ratingValue;
-                    formData += "&d_rating=" + d_ratingValue;
+                    formData += "&t_rating=" + t_ratingValue;
+                    formData += "&a_rating=" + a_ratingValue;
+
                     //formData += "&daydifference=" + dayDifference
                     handleFormSubmission(formData);
                     console.log("Serialized Data: ",formData);

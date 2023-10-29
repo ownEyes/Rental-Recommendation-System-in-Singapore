@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Creative - Start Bootstrap Theme</title>
+        <title>Find your own space</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="../static/img/favicon.ico" />
         <link rel="stylesheet" href="../static/css/bootstrap.min.css">
@@ -82,277 +82,17 @@
     <body>
         <div id="mainNav"></div>
         <section class="page-section" id="contact">
-        <div class="container">
+        
         <h2 class="mb-4 text-center">Here are the recommendations based on your preferences</h2>
-        <div class="card" style="background-color: antiquewhite;">
-            <div class="row ">
-                <div class="col-4">
-                    <img class="card-img rounded w-100 img-fluid" src="https://a0.muscache.com/pictures/miso/Hosting-47945703/original/2abc9c45-bace-4047-8864-548efe50b911.jpeg" alt="Card image cap">
-                </div>
-                <div class="col-8">
-                    <div class="card-heading">
-                        <h3 class="card-title"><b>Boutique hotel in Tanjong Pagar</b></h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row ">
-                            <div class="col-5">
-                                <div class="row ">
-                                    <div class="col-4 custom-box">Private</div>
-                                    <div class="col-1"></div>
-                                    <div class="col-6 custom-box">2 accommodate</div>
-                                    <div class="col-1"></div>
-                                </div>
-                                <br>
-                            </div>
-                            <div class="col-7">
-                                <div class="row">
-                                    <div class="col-12 custom-box"> n bedrooms . n beds . n bathrooms</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row"> 
-                            <div class="col-9">
-                                <div class="row">   
-                                    <div class="col-3 custom-box dropdown" id="public_facilities_button">
-                                        Public Facilities
-                                        <div class="dropdown-content">
-                                            <div id="public_facilities_data"></div>
-                                        </div>
-                                    </div>   
-                                    <div class="col-1"></div>    
-                                    <div class="col-3 custom-box dropdown" id="cooking_facilities_button">
-                                        Cooking Facilities
-                                        <div class="dropdown-content">
-                                            <div id="cooking_facilities_data"></div>
-                                        </div>
-                                    </div>  
-                                    <div class="col-1"></div>     
-                                    <div class="col-3 custom-box dropdown" id="interior_facilities_button">
-                                        Interior Facilities
-                                        <div class="dropdown-content">
-                                            <div id="interior_facilities_data"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-1"></div>         
-                                </div>
-                            </div>
-                         
-                            <div class="col-3">
-                                <div class="col-12 custom-box dropdown" id="other_button">
-                                    Others
-                                    <div class="dropdown-content">
-                                        <div id="other_data"></div>
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
-                            <br>
-                            <h5 class="col-12">S$ 4980 /month</h5>
-                            <br>
-                            <h6 class="col-12">226.3m to EW15 TANJONG PAGAR MRT STATION </h6>
-                            <h6 class="col-12">196.0m to Elegance Beauty & Slimming(10 Anson Rd, International Plaza, Singapore 079903) </h6>
-                            <h6 class="col-12"><a href="./map_with_marker.html">Location: Jurong East (waiting for API)</a></h6>
-                            
-                        </div>
-                       
-                            
-                    </div>
-            </div>
-            </div>
+        {% for rent in rents %}
+        {% with rent=rent, recomm_idx=loop.index, form=form %}
+                {% include 'rent_block.html' %}
+            {% endwith %}
+        {% endfor %}
+
             
-        </div>
-            <div class="mb-100" style="background-color: white;">
-                <div class="row mb-4">
 
-                </div>
-            </div>
-
-        <div class="container">
-            <div class="card" style="background-color: antiquewhite;">
-                <div class="row ">
-                    <div class="col-4">
-                        <img class="card-img rounded w-100 img-fluid" src="https://a0.muscache.com/pictures/miso/Hosting-47945703/original/2abc9c45-bace-4047-8864-548efe50b911.jpeg" alt="Card image cap">
-                    </div>
-                    <div class="col-8">
-                        <div class="card-heading">
-                            <h3 class="card-title"><b>Boutique hotel in Tanjong Pagar</b></h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row ">
-                                <div class="col-5">
-                                    <div class="row ">
-                                        <div class="col-4 custom-box">Private</div>
-                                        <div class="col-1"></div>
-                                        <div class="col-6 custom-box">2 accommodate</div>
-                                        <div class="col-1"></div>
-                                    </div>
-                                    <br>
-                                </div>
-                                <div class="col-7">
-                                    <div class="row">
-                                        <div class="col-12 custom-box"> n bedrooms . n beds . n bathrooms</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row"> 
-                                <div class="col-9">
-                                    <div class="row">   
-                                        <div class="col-3 custom-box dropdown" id="public_facilities_button">
-                                            Public Facilities
-                                            <div class="dropdown-content">
-                                                <div id="public_facilities_data"></div>
-                                            </div>
-                                        </div>   
-                                        <div class="col-1"></div>    
-                                        <div class="col-3 custom-box dropdown" id="cooking_facilities_button">
-                                            Cooking Facilities
-                                            <div class="dropdown-content">
-                                                <div id="cooking_facilities_data"></div>
-                                            </div>
-                                        </div>  
-                                        <div class="col-1"></div>     
-                                        <div class="col-3 custom-box dropdown" id="interior_facilities_button">
-                                            Interior Facilities
-                                            <div class="dropdown-content">
-                                                <div id="interior_facilities_data"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-1"></div>         
-                                    </div>
-                                </div>
-                             
-                                <div class="col-3">
-                                    <div class="col-12 custom-box dropdown" id="other_button">
-                                        Others
-                                        <div class="dropdown-content">
-                                            <div id="other_data"></div>
-                                        </div>
-                                    </div>
-                                </div> 
-                            </div>
-                                <br>
-                                <h5 class="col-12">S$ 4980 /month</h5>
-                                <br>
-                                <h6 class="col-12">226.3m to EW15 TANJONG PAGAR MRT STATION </h6>
-                                <h6 class="col-12">196.0m to Elegance Beauty & Slimming(10 Anson Rd, International Plaza, Singapore 079903) </h6>
-                                <h6 class="col-12"><a href="./map_with_marker.html">Location: Jurong East (waiting for API)</a></h6>
-                                
-                            </div>
-                           
-                                
-                        </div>
-                </div>
-                </div>
-                
-        </div>
 </section>
-    <script>
-        $(document).ready(function () {
-            $("#public_facilities_button").click(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: '/get_data',
-                    success: function (response) {
-                        var data = response.data;
-                        var dataDiv0 = $("#public_facilities_data");
-                        
-
-                        // 清空下拉菜单中的数据
-                        dataDiv0.empty();
-                        
-
-                        // 将数据中的每个项目添加到下拉菜单中
-                        data[0].forEach(function (item) {
-                            dataDiv0.append('<p>' + item + '</p>');
-                        });
-                    },
-                    error: function () {
-                        console.log("无法从服务器检索数据。");
-                    }
-                });
-            });
-        });
-        $(document).ready(function () {
-            $("#cooking_facilities_button").click(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: '/get_data',
-                    success: function (response) {
-                        var data = response.data;
-
-                        var dataDiv1 = $("#cooking_facilities_data");
-
-                        // 清空下拉菜单中的数据
-
-                        dataDiv1.empty();
-
-                        // 将数据中的每个项目添加到下拉菜单中
-                        data[1].forEach(function (item) {
-                            dataDiv1.append('<p>' + item + '</p>');
-                        });
-                    },
-                    error: function () {
-                        console.log("无法从服务器检索数据。");
-                    }
-                });
-            });
-        });
-        $(document).ready(function () {
-            $("#interior_facilities_button").click(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: '/get_data',
-                    success: function (response) {
-                        var data = response.data;
-
-                        var dataDiv2 = $("#interior_facilities_data");
-
-                        // 清空下拉菜单中的数据
-
-                        dataDiv2.empty();
-
-                        // 将数据中的每个项目添加到下拉菜单中
-                        data[2].forEach(function (item) {
-                            dataDiv2.append('<p>' + item + '</p>');
-                        });
-                    },
-                    error: function () {
-                        console.log("无法从服务器检索数据。");
-                    }
-                });
-            });
-        });
-        $(document).ready(function () {
-        $("#other_button").click(function () {
-            $.ajax({
-                type: 'GET',
-                url: '/get_data',
-                success: function (response) {
-                    var data = response.data;
-                    var dataDiv3 = $("#other_data");
-
-                    // 清空下拉菜单中的数据
-                    dataDiv3.empty();
-
-                    // 将数据中的每个项目添加到下拉菜单中
-                    data[3].forEach(function (item) {
-                        dataDiv3.append('<p>' + item + '</p>');
-                    });
-                },
-                error: function () {
-                    console.log("无法从服务器检索数据。");
-                }
-            });
-        });
-    });
-    </script>
-
-
-
-
-
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/nav')
@@ -377,6 +117,11 @@
       <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
       <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
       <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+      <script>
+        $(function () { 
+            $("[data-toggle='popover']").popover();
+        });
+    </script>
     </body>
 
     
