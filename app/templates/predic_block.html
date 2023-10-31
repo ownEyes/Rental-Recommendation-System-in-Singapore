@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>predic_block</title>
+    <style>
+        .containera {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .rowa {
+            font-weight: bold; /* 加粗 */
+            font-size: 18px; /* 放大字体 */
+            color: orangered; /* 字体颜色 */
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            text-align: center; /* 文本居中 */
+            margin: 0 auto; /* 水平居中 */
+        }
+        .rowb {
+            font-weight: bold; /* 加粗 */
+            font-size: 25px; /* 放大字体 */
+            color: orangered; /* 字体颜色 */
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            text-align: center; /* 文本居中 */
+            margin: 0 auto; /* 水平居中 */
+        }
+
+        .rowc img {
+            width: 100%; /* 图像宽度占满其容器 */
+            height: auto; /* 保持原始宽高比 */
+            display: block;
+            margin: 0 auto; /* 图像水平居中 */
+        }
+
+        
+    </style>
+    </head>
+
+    <body>
+        
+        <div class="container">
+            <div class="row rowa"><h4>{{ predadv.price }}</h4></div>
+            <div class="row"><h4>This is the factors that contribute to the pricing suggestion</h4></div>
+            <div class="rowc"><img src="{{ predadv.cloud_img }}" alt="Image"></div>
+            <div class="row rowb"><a href="mapgenerate">Find the brief introduction and price of the listings similar to you!</a></div>
+            
+    </body>
+    
+    </html>
+    

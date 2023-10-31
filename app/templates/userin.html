@@ -38,7 +38,8 @@
                 width: 110px;
             }
            </style>
-           <title>Find your own space</title>
+           <title>Easing Your Rental Journey</title>
+           <link rel="icon" type="image/x-icon" href="../static/img/favicon.ico" />
     </head>
     <body>
         <div id="mainNav"></div>
@@ -57,45 +58,42 @@
                         {{ form.csrf_token }}
                         <div class="form-group row align-items-center justify-content-center">
                             <div class ="col-1">
-                                <label for="minprice" class="col-form-label text-right">Min. Price:</label>
+                                <label for="minmonth" class="col-form-label text-right">Min. Month:</label>
                             </div>
                             <div class="col-1">
-                                <input type="text" name ="minprice" class="form-control" id="minprice">
+                                <input type="text" name ="minmonth" class="form-control" id="minmonth">
                                     <!--span class="input-group-text">----</span-->
                             </div>
                             <div class ="col-1">
-                                <label for="maxprice" class="col-form-label text-right">Max. Price:</label>
+                                <label for="maxmonth" class="col-form-label text-right">Max. Month:</label>
                             </div>
                             <div class="col-1">
-                                <input type="text" name ="maxprice" class="form-control" id="maxprice">
+                                <input type="text" name ="maxmonth" class="form-control" id="maxmonth">
                                     <!--span class="input-group-text">----</span-->
                             </div>
                         </div>
                         <div class="form-group row align-items-center justify-content-center">
-                            <div class ="col-2">
-                                <label for="pricerating" class="col-form-label text-right">Importance for Price:</label>
+                            <div class ="col-1">
+                                <label for="region" class="col-2 col-form-label text-right">Region:</label>
                             </div>
                             <div class="col-3">
-                                <input id="pricerating" value="0" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm" title="" name="importance_p">
-                                <!-- <input type="hidden" id="importance_p" name="importance_p"> -->
+                                <select name="region" class="form-control" id="region"> 
+                                     <option value="" disabled selected></option>  
+                                     <option value="East Region">East Region</option>
+                                     <option value="Central Region">Central Region</option>
+                                     <option value="North Region">North Region</option>
+                                     <option value="North-East Region">North-East Region</option>
+                                     <option value="West Region">West Region</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row align-items-center justify-content-center">
                             <div class ="col-1">
-                                <label for="location" class="col-2 col-form-label text-right">Location:</label>
+                                <label for="postcode" class="col-2 col-form-label text-right">Postcode:</label>
                             </div>
                             <div class="col-3">
                         
-                                <input type="text" name="location" class="form-control" id="location">   
-                            </div>
-                        </div>
-                        <div class="form-group row align-items-center justify-content-center">
-                            <div class ="col-2">
-                                <label for="locationrating" class="col-form-label text-right">Importance for Location:</label>
-                            </div>
-                            <div class="col-3">
-                                <input id="locationrating" value="" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
-                            title="" name="importance_l">
+                                <input type="text" name="postcode" class="form-control" id="postcode">   
                             </div>
                         </div>
                         <div class="form-group row align-items-center justify-content-center">
@@ -105,36 +103,55 @@
                             <div class="col-3">
                                 <select name="roomtype" class="form-control" id="roomtype" > 
                                      <option value="" disabled selected></option>  
-                                     <option value="Entire home/apt">Entire home/apt(Retype min&max price in<br>the form of a block lease)</option>
-                                     <option value="Hotel room">Hotel room</option>
-                                     <option value="Private room">Private room</option>
-                                     <option value="Shared room">Shared room</option>
+                                     <option value="EntireHome/apt">Entire home/apt(Retype min&max price in<br>the form of a block lease)</option>
+                                     <option value="HotelRoom">Hotel room</option>
+                                     <option value="PrivateRoom">Private room</option>
+                                     <option value="SharedRoom">Shared room</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row align-items-center justify-content-center">
-                            <div class ="col-2">
-                                <label for="typerating" class="col-form-label text-right">Importance for Roomtype:</label>
+                            <div class ="col-1">
+                                <label for="numbedrooms" class="col-form-label text-right">Num. Bedrooms:</label>
                             </div>
-                            <div class="col-3">
-                                <input id="typerating" value="" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
-                            title="" name="importance_t">
+                            <div class="col-1">
+                                <input type="text" name ="numbedrooms" class="form-control" id="numbedrooms">
+                                    <!--span class="input-group-text">----</span-->
+                            </div>
+                            <div class ="col-1">
+                                <label for="numbeds" class="col-form-label text-right">Num. Beds:</label>
+                            </div>
+                            <div class="col-1">
+                                <input type="text" name ="numbeds" class="form-control" id="numbeds">
+                                    <!--span class="input-group-text">----</span-->
                             </div>
                         </div>
-                        <input type="hidden" name="dayDifference" id="dayDifference" value="0">
                         <div class="form-group row align-items-center justify-content-center">
-                            <label for="datepickerin" class="col-1 col-form-label text-right">Checkin Date:</label>
-                            <div class="col-1">
-                                <div class="input-daterange">
-                                    <input type="text" name="checkin" id="checkin" class="form-control wide-input" placeholder="Start" onchange="updateDayDifference()">
-                                </div>
+                            <div class ="col-1">
+                                <label for="numbathrooms" class="col-form-label text-right">Num. Bathrooms:</label>
                             </div>
-                        
-                            <label for="datepickerout" class="col-1 col-form-label text-right">Checkout Date:</label>
                             <div class="col-1">
-                                <div class="input-daterange">
-                                    <input type="text" name="checkout" id="checkout" class="form-control wide-input" placeholder="End" onchange="updateDayDifference()">
-                                </div>
+                                <input type="text" name ="numbathrooms" class="form-control" id="numbathrooms">
+                                    <!--span class="input-group-text">----</span-->
+                            </div>
+                            <div class ="col-1">
+                                <label for="bathroomtype" class="col-form-label text-right">Type Bathroom:</label>
+                            </div>
+                            <div class="col-1">
+                                <select name="bathroomtype" class="form-control" id="bathroomtype" > 
+                                     <option value="" disabled selected></option>  
+                                     <option value="Private">Private</option>
+                                     <option value="Shared">Shared</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center justify-content-center">
+                            <div class ="col-1">
+                                <label for="accommodates" class="col-2 col-form-label text-right">Num. Hosts:</label>
+                            </div>
+                            <div class="col-3">
+                        
+                                <input type="text" name="accommodates" class="form-control" id="accommodates">   
                             </div>
                         </div>
                         <div class="container mt-5">
@@ -251,20 +268,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row align-items-center justify-content-center">
-                                    <div class ="col-2">
-                                        <label for="amenitiesrating" class="col-form-label text-right">Importance for Amenities:</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <input id="amenitiesrating" value="" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
-                                    title="" name="importance_a">
+                                <div class="mb-100" style="background-color: white;">
+                                    <div class="row mb-4">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-100" style="background-color: white;">
                             <div class="row mb-4">
-
                             </div>
                         </div>
                         <div class="text-center"> 
@@ -275,19 +286,6 @@
             </div>
         </section>
         <script>
-            function updateDayDifference() {
-              var checkinInput = document.getElementById("checkin");
-              var checkoutInput = document.getElementById("checkout");
-              var checkinDate = new Date(checkinInput.value);
-              var checkoutDate = new Date(checkoutInput.value);
-              var checkinDate1 = checkinDate.getTime();
-              var checkoutDate1 = checkoutDate.getTime();
-              var timeDiff = Math.abs(checkoutDate1 - checkinDate1);
-              var dayDifference = Math.ceil(timeDiff / (1000 * 3600 * 24));
-              document.getElementById("dayDifference").value = dayDifference;
-            }
-          </script>          
-        <script>
             document.addEventListener('DOMContentLoaded', function() {
             fetch('/nav')
             .then(response => response.text())
@@ -296,152 +294,46 @@
               });
                 }
             );
-            $(document).ready(function() {
-        var datepickerOptions = {
-            format: 'yyyy-mm-dd',
-            todayBtn: 'linked',
-            clearBtn: true,
-            autoclose: true,
-            multidate: 2,
-            orientation: "bottom"
-        };
-
-        $('#checkin').datepicker(datepickerOptions).on('show', function(e) {
-            e.preventDefault();
-        });
-        
-        $('#checkout').datepicker(datepickerOptions).on('show', function(e) {
-            e.preventDefault();
-        });
-    });
-            jQuery(document).ready(function () {
-                $("#input-21f").rating({
-                    starCaptions: function (val) {
-                        if (val < 3) {
-                            return val;
-                        } else {
-                            return 'high';
-                        }
-                    },
-                    starCaptionClasses: function (val) {
-                        if (val < 3) {
-                            return 'label label-danger';
-                        } else {
-                            return 'label label-success';
-                        }
-                    },
-                    hoverOnClear: false
-                });
-                var $inp = $('#rating-input');
-    
-                $inp.rating({
-                    min: 0,
-                    max: 5,
-                    step: 1,
-                    size: 'lg',
-                    showClear: false
-                });
-    
-                $('#btn-rating-input').on('click', function () {
-                    $inp.rating('refresh', {
-                        showClear: true,
-                        disabled: !$inp.attr('disabled')
-                    });
-                });
-    
-    
-                $('.btn-danger').on('click', function () {
-                    $("#kartik").rating('destroy');
-                });
-    
-                $('.btn-success').on('click', function () {
-                    $("#kartik").rating('create');
-                });
-    
-                $inp.on('rating.change', function () {
-                    alert($('#rating-input').val());
-                });
-    
-    
-                $('.rb-rating').rating({
-                    'showCaption': true,
-                    'stars': '3',
-                    'min': '0',
-                    'max': '3',
-                    'step': '1',
-                    'size': 'xs',
-                    'starCaptions': {0: 'status:nix', 1: 'status:wackelt', 2: 'status:geht', 3: 'status:laeuft'}
-                });
-                $("#input-21c").rating({
-                    min: 0, max: 8, step: 0.5, size: "xl", stars: "8"
-                });
-                $("#pricerating").rating();
-                $("#rating_changer").on("change", function() {
-                    if (this.value == "") {
-                         $("#pricerating").rating("clear");
-                    } else { 
-                      $("#pricerating").rating("update", this.value); 
-                     }
-                });
-                $("#locationrating").rating();
-                  // trap the select change event to execute a rating method
-                $("#l_rating_changer").on("change", function() {
-                    if (this.value == "") {
-                        $("#locationrating").rating("clear");
-                    } else { 
-                    $("#locationrating").rating("update", this.value); 
-                    }
-                });
-                $("#typerating").rating();
-                  // trap the select change event to execute a rating method
-                $("#t_rating_changer").on("change", function() {
-                    if (this.value == "") {
-                        $("#typerating").rating("clear");
-                    } else { 
-                        $("##typerating").rating("update", this.value); 
-                    }
-                });  
-                $("#amenitiesrating").rating();
-                  // trap the select change event to execute a rating method
-                $("#a_rating_changer").on("change", function() {
-                    if (this.value == "") {
-                        $("#amenitiesrating").rating("clear");
-                    } else { 
-                        $("##amenitiesrating").rating("update", this.value); 
-                    }
-                }); 
-            });
             jQuery(document).ready(function(){ 
                 function handleFormSubmission(formData) {
-                    var minprice = document.getElementById("minprice").value;
-                    var maxprice = document.getElementById("maxprice").value;
-                    var location = document.getElementById("location").value;
-                    var startdate = document.getElementById("checkin").value;
-                    var enddate = document.getElementById("checkout").value;
+                    var minmonth = parseInt(document.getElementById("minmonth").value, 10);
+                    var maxmonth = parseInt(document.getElementById("maxmonth").value, 10);
+                    var postcode = document.getElementById("postcode").value;
                     var roomtype = document.getElementById("roomtype").value;
-                    var input1 = $("input[name='importance_p']").val();
-                    var input2 = $("input[name='importance_l']").val();
-                    var input3 = $("input[name='importance_d']").val();
-                    var checkinInput = document.getElementById("checkin");
-                    var checkoutInput = document.getElementById("checkout");
-                    var checkinDate = new Date(checkinInput.value);
-                    var checkoutDate = new Date(checkoutInput.value);
-                    var checkinDate1 = checkinDate.getTime();
-                    var checkoutDate1 = checkoutDate.getTime();
-                    var timeDiff = Math.abs(checkoutDate1 - checkinDate1);
-                    var dayDifference = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    $("#dayDifference").val(dayDifference);
-                    if (minprice === "" || maxprice === "" || location === "" || startdate === "" || enddate === "" || roomtype === "" ) {
+                    var num_bedrooms = document.getElementById("numbedrooms").value;
+                    var num_beds = document.getElementById("numbeds").value;
+                    var num_bathrooms = document.getElementById("numbathrooms").value;
+                    var type_bathrooms = document.getElementById("bathroomtype" ).value;
+                    var accommodates = document.getElementById("accommodates").value;
+                    // var BBQ=document.getElementById("BBQ").value;
+                    // var gym=document.getElementById("gym").value;
+                    // var pool=document.getElementById("pool").value;
+                    // var backyard=document.getElementById("backyard").value;
+                    // var kitchen=document.getElementById("kitchen").value;
+                    // var refrigerator=document.getElementById("refrigerator").value;
+                    // var microwave=document.getElementById("microwave").value;
+                    // var oven=document.getElementById("oven").value;
+                    // var stoven=document.getElementById("stoven").value;
+                    // var aircon=document.getElementById("aircon").value;
+                    // var dryer=document.getElementById("dryer").value;
+                    // var Wifi=document.getElementById("Wifi").value;
+                    // var TV=document.getElementById("TV").value;
+                    // var fan=document.getElementById("fan").value;
+                    // var pets=document.getElementById("pets").value;
+                    var amenities = [BBQ, gym, pool, backyard, kitchen, refrigerator, microwave, oven, stoven, aircon, dryer, Wifi, TV, fan, pets];
+                    var isAmenitySelected = amenities.some(amenity => amenity !== ''); // 检查至少一个复选框是否被选中
+
+                    if (minmonth === "" || maxmonth === "" || postcode === "" || region === ""|| roomtype === "" || num_bedrooms === "" || num_beds==="" || num_bathrooms === "" || type_bathrooms === "" ||accommodates === "") {
                         alert("Please finish all the blanks!");
                     }
-                    // else if(input1==input2 || input2==input3 || input1==input3){
-                    //             alert("Please ensure that importance values are different!")     
-                    //         }
-                    // else if(minprice>maxprice){
-                    //     alert("Please type in correct price range!")
-                    // }
-                    else if(dayDifference < 92){
-                        alert("Please ensure that the stay is at least 92 days.");
+                    else if(minmonth > maxmonth){
+                        alert("Please type in correct time range!");
+                    }
+                    else if(!isAmenitySelected){
+                        alert('Please select at least one amenity you have!');
+                    }
+                    else if(minmonth < 3){
+                        alert("The residence should last at least 3 months!");
                         
                     }    // 验证输入是否满足条件
                     else {
@@ -451,7 +343,7 @@
                             type: 'POST',
                             data: formData,
                             success: function(response) {
-                                window.location.href = '/recomm';
+                                window.location.href = '/priadv';
                             },
                             error: function(error) {
                                     // 处理请求错误
@@ -460,22 +352,13 @@
                     } 
                 }
                 
-                $("#userin").off('submit').submit(function(e) {
+                $("#userin").submit(function(e) {
                     e.preventDefault();
-                    var serializedData = $(this).serialize();
-                    var p_ratingValue = $("#pricerating").val(); 
-                    var l_ratingValue = $("#locationrating").val();
-                    var t_ratingValue = $("#typerating").val();
-                    var a_ratingValue = $("#amenitiesrating").val();
-                    var formData = $(this).serialize(); 
-                    formData += "&p_rating=" + p_ratingValue;
-                    formData += "&l_rating=" + l_ratingValue;
-                    formData += "&t_rating=" + t_ratingValue;
-                    formData += "&a_rating=" + a_ratingValue;
+                    var formData = $(this).serialize();
 
                     //formData += "&daydifference=" + dayDifference
                     handleFormSubmission(formData);
-                    console.log("Serialized Data: ",formData);
+                    //console.log("Serialized Data: ",formData);
                 });
                 
         });

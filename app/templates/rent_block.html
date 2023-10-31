@@ -23,54 +23,14 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        .comment-form {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .comment-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        .comment-form button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .comment-form button:hover {
-            background-color: #45a049;
-        }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function toggleCommentForm() {
-                var form = document.querySelector('.comment-form');
-                if (form.style.display === 'none' || form.style.display === '') {
-                    form.style.display = 'block';
-                } else {
-                    form.style.display = 'none';
-                }
-            }
-            window.toggleCommentForm = toggleCommentForm; // Expose to global scope
-        });
-    </script>
 </head>
 <body>
     <div class="container">
     <div class="card" style="background-color: antiquewhite;">
         <div class="row ">
             <div class="col-4">
-                <img class="card-img rounded w-100 img-fluid"  src="{{ rent.img_src }} " alt="{{ rent.img_src }} ">
+                <img class="card-img rounded w-100 img-fluid" src={{ rent.img_url }} alt="Card image cap">
             </div>
             <div class="col-8">
                 <div class="card-heading">
@@ -133,7 +93,7 @@
                             </div>
                          
                             <div class="col-3">
-                                <div class="col-10 custom-box dropdown" id="other_button_{{ rent.id }}">
+                                <div class="col-12 custom-box dropdown" id="other_button_{{ rent.id }}">
                                     Others
                                     <div class="dropdown-content">
                                         <div id="other_data">
@@ -146,39 +106,14 @@
                         </div>
                 </div>
                   
-                        <!-- <br> -->
+                        <br>
                         <div class="row">
                             <h5 class="col-12">{{ rent.price }}</h5>
                             <h6 class="col-12">{{ rent.distance_to_mrt }} </h6>
                             <h6 class="col-12">{{ rent.mall_info }} </h6>
-                            <h6 class="col-12"><a href="{{rent.location_href}}" target="_blank">{{ rent.location_info }}</a></h6>
+                            <h6 class="col-12"><a href="/map_with_marker">{{ rent.location_info }}</a></h6>
                         </div>
                     </div>      
-                </div>
-                <button type="button" onclick="toggleCommentForm()">Write a comment</button>
-
-                <!-- 隐藏的评论表单 -->
-                <div class="comment-form" style="display: none;">
-                    <h3>Write a comment</h3>
-                    <form method="post" action="{{ url_for('home_blueprint.get_comment', recomm_idx=recomm_idx) }}">
-                        {{ form.hidden_tag() }}
-                        
-                        <!-- 渲染评论字段 -->
-                        <div class="form-group">
-                            {{ form.comment.label(class="form-control-label") }}
-                            {{ form.comment(class="form-control", rows=3) }}
-                            {% if form.comment.errors %}
-                                <div class="alert alert-danger">
-                                    {% for error in form.comment.errors %}
-                                        <p>{{ error }}</p>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- 提交按钮 -->
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -191,4 +126,3 @@
 </div>
 </body>
 </html>
-    

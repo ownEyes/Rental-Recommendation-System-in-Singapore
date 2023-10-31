@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map with Marker</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="width: 800px; height: 600px;"></div>
+    <script>
+        $(document).ready(function() {
+            $.get('/mapgenerate', function(data) {
+                $('#map').html(data.map_html);
+
+                // Retrieve all popups and apply custom styles
+                var popups = $('.leaflet-popup-content');
+                popups.each(function() {
+                    $(this).css({
+                        'width': '700px',
+                        'height': 'auto', // Change the height accordingly
+                        'max-height': '700px',
+                        'overflow': 'auto'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
