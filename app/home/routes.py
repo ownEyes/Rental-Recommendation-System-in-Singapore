@@ -11,7 +11,7 @@ from app.home import blueprint
 from app.services.DataProcessing import *
 from app.services.Convert import *
 from app.extension import db
-from mywordcloud import *
+from app.home.mywordcloud import *
 
 # @blueprint.route('/userin', methods=['GET', 'POST'])
 # @login_required
@@ -137,7 +137,7 @@ def submit_data():
         user_input_data['other_needs'] = ', '.join(form.other_needs.data)
         #logger.debug("前端发送给后端的数据: minprice=%s,maxprice=%s,location=%s,checkin=%s,checkout=%s,p_rating=%s,l_rating=%s,t_rating=%s",minprice,maxprice,location,checkin,checkout,pr,lr,dr)
         # print(user_input_data)
-        amv=amenities_to_vector([[form.public_facilities.data],[form.cooking_facilities.data],[form.interior_facilities.data],[form.other_needs.data]])
+        amv=amenities_to_vector([form.public_facilities.data,form.cooking_facilities.data,form.interior_facilities.data,form.other_needs.data])
         geocoding=get_geocoding(user_input_data['region'],user_input_data['postcode'])
         mrt_dis,mrt=cal_mrt_dis(geocoding)
         mall_dis,mall=cal_mall_dis(geocoding)
@@ -151,15 +151,15 @@ def submit_data():
         user_input_data['mall_adress']=mall['formatted_address']
         input = { 'neighbourhood_group_cleansed':user_input_data['region'], 'latitude':geocoding[0], 'longitude':geocoding[1], 'room_type':user_input_data['roomtype'],
                  'minimum_months':int(user_input_data['minmonth']), 'maximum_months':int(user_input_data['maxmonth']),
-                'distance_to_mrt':mrt_dis, 'closest_mall_distance':mall_dis, 'accommodates':int(user_input_data['accommodates']), 'conditioning':amv[0], 'BBQ':amv[1], 'gym':amv[2], 'pool':amv[3], 'dryer':amv[4],
-                'Wifi':amv[5], 'kitchen':amv[6], 'Backyard':amv[7], 'TV':amv[8], 'refrigerator':amv[9], 'Microwave':amv[10], 'Oven':amv[11], 'Pets':amv[12], 'stove':amv[13], 'fan':amv[14], 
+                'distance_to_mrt':mrt_dis, 'closest_mall_distance':mall_dis, 'conditioning':amv[0], 'BBQ':amv[1], 'gym':amv[2], 'pool':amv[3], 'dryer':amv[4],
+                'Wifi':amv[5], 'kitchen':amv[6], 'Backyard':amv[7], 'TV':amv[8], 'refrigerator':amv[9], 'Microwave':amv[10], 'Oven':amv[11], 'Pets':amv[12], 'stove':amv[13], 'fan':amv[14], 'accommodates':int(user_input_data['accommodates']),
                 'total_bedrooms':int(user_input_data['numbedrooms']), 'total_beds':int(user_input_data['numbeds']),
                 'total_baths':float(user_input_data['numbathrooms']), 'bath_type':user_input_data['bathroomtype'], }
         current_app.forcaster.load_input(input)
         data,input_vec=get_house_data(input)
         current_app.recommender.content_based_recommendation(data,input_vec)
         user_input_data['price']=current_app.forcaster.predict()
-        return redirect(url_for('mapgenerate')) 
+        return redirect(url_for('home_blueprint.mapgenerate')) 
         #return ("success") 
        
     # else:
@@ -178,8 +178,8 @@ def priadv():
     generate_wordcloud(process_feature_imp(feature_imp),file_path)
     
     predadv={
-        'price':'S$ '+str(result)+' /month',
-        'cloud_img':file_path
+        'price':'S$ '+str(int(result))+' /month',
+        'cloud_img':'./static/img/wordcloud.png'
         }
 
     return render_template('predic&advan.html',predadv=predadv)
@@ -195,9 +195,9 @@ def mapgenerate():
 
 
     userin = ['The information of your own residents',str(user_input_data.get('numbedrooms', '')+' bedroom · '+user_input_data.get('numbeds', '')+' bed · ' +user_input_data.get('numbathrooms', '') +' '+user_input_data.get('bathroomtype', '')+  ' bath'), user_input_data.get('region', ''),str(user_input_data.get('accommodates', '')+ ' accommodate'), user_input_data.get('roomtype', ''),
-              user_input_data.get('public_facilities', ''), user_input_data.get('cooking_facilities', ''), user_input_data.get('interior_facilities', ''), user_input_data.get('other_needs', ''), 'S$ '+str(user_input_data.get('price', ''))+' /month', 
-              str(user_input_data.get('mrt_dis', ''))+'m to '+str(user_input_data.get('stop_id', ''))+' '+str(user_input_data.get('mrt_name', '')),
-              str(user_input_data.get('mall_dis', ''))+'m to '+str(user_input_data.get('mall_name', ''))+'('+str(user_input_data.get('mall_adress', ''))+')', user_input_data.get('latitude', 1.352083),
+              user_input_data.get('public_facilities', ''), user_input_data.get('cooking_facilities', ''), user_input_data.get('interior_facilities', ''), user_input_data.get('other_needs', ''), 'S$ '+str(int(user_input_data.get('price', '')))+' /month', 
+              str(int(user_input_data.get('mrt_dis', '')*1000))+'m to '+str(user_input_data.get('stop_id', ''))+' '+str(user_input_data.get('mrt_name', '')),
+              str(int(user_input_data.get('mall_dis', '')*1000))+'m to '+str(user_input_data.get('mall_name', ''))+'('+str(user_input_data.get('mall_adress', ''))+')', user_input_data.get('latitude', 1.352083),
               user_input_data.get('longitude', 103.819836)]
     
     user_df = pd.DataFrame([userin], columns=columns)
@@ -206,7 +206,7 @@ def mapgenerate():
     recomm_list=current_app.data_manager.get_recommends(lists,"HouseID")
     s=[]
     for row_num, row in enumerate(recomm_list.itertuples(index=False), start=1):
-        s1=df_to_display(row_num, row)
+        s1=house_to_draw(row_num, row)
         s.append(s1)
     
     df = pd.DataFrame(s, columns=columns)
@@ -224,10 +224,10 @@ def mapgenerate():
             <p>{label[2]}</p>
             <p>{label[3]}</p>
             <p>{label[4]}</p>
-            <p>{label[5][0]}</p>
-            <p>{label[6][0]}</p>
-            <p>{label[7][0]}</p>
-            <p>{label[8][0]}</p>
+            <p>{next(iter(label[5]), " ")}</p>
+            <p>{next(iter(label[6]), " ")}</p>
+            <p>{next(iter(label[7]), " ")}</p>
+            <p>{next(iter(label[8]), " ")}</p>
             <p>{label[9]}</p>
             <p>{label[10]}</p>
             <p>{label[11]}</p>

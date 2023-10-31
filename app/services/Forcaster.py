@@ -22,6 +22,7 @@ class Forcaster:
         self.input=None
         self.result=None
         self.importance=None
+        self.columns=None
         
     def load_input(self,input):
         input_df = pd.DataFrame([input])
@@ -34,7 +35,8 @@ class Forcaster:
         # 独热编码
         prediction_encoded_cols = list(self.encoder.get_feature_names_out(text_cols))
         input_df[prediction_encoded_cols] = self.encoder.transform(input_df[text_cols].values)
-        x_input = input_df[numeric_cols + prediction_encoded_cols]
+        self.columns=numeric_cols + prediction_encoded_cols
+        x_input = input_df[self.columns]
         # 归一化
         self.input = self.scaler.transform(x_input)
     
@@ -43,7 +45,7 @@ class Forcaster:
         self.scaler = joblib.load(scaler_path)
         self.encoder = joblib.load(encoder_path)
     
-    def perdict(self):
+    def predict(self):
         stack_predicted_price_boxcox=self.model.predict(self.input)[0]
         if self.lambda_value != 0:
             predicted_price = (stack_predicted_price_boxcox * self.lambda_value + 1) ** (1 / self.lambda_value)
@@ -74,8 +76,8 @@ class Forcaster:
         stacking_shap_values = np.mean(shap_values_list, axis=0)
 
         # 将SHAP值转换为数据帧
-        shap_df = pd.DataFrame(stacking_shap_values, columns=self.input.columns)
-        self.importance=shap_df.to_dict()
+        shap_df = pd.DataFrame(stacking_shap_values, columns=self.columns)
+        self.importance=shap_df.iloc[0].to_dict()
         return self.importance
     
     

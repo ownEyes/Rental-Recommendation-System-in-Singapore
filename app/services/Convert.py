@@ -1,9 +1,11 @@
 from flask import current_app
 import requests
 import pandas as pd
-from sklearn.neighbors import KDTree
+from scipy.spatial import KDTree
+from haversine import haversine, Unit
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
+import re
 
 
 def get_geocoding(region,postcode):
@@ -47,23 +49,29 @@ def amenities_to_vector(amenities_list):
 def cal_mrt_dis(geocoding):
     
     df = current_app.data_manager.get_mrts_df(['latitude','longitude','name','stop_id'])
-    coords = df[['Latitude', 'Longitude']].values
-    tree = KDTree(coords, leaf_size=2, metric='haversine')
+    coords = df[['latitude', 'longitude']].values
+    tree = KDTree(coords, leafsize=2) 
+    
     point = np.array([geocoding])
-    distances, indices = tree.query(point, k=2)
-    distances_km = distances * 6371
-    nearest_stations = df.iloc[indices[0]]
-    return distances_km,nearest_stations
+    
+    _, index = tree.query(point, k=1)
+    nearest_station = df.iloc[index[0]]
+    distance_km = haversine(geocoding, (nearest_station.loc['latitude'], nearest_station.loc['longitude']), unit=Unit.KILOMETERS)
+    return distance_km,nearest_station
 
 def cal_mall_dis(geocoding):
     df = current_app.data_manager.get_malls_df(['latitude','longitude','name','formatted_address'])
-    coords = df[['Latitude', 'Longitude']].values
-    tree = KDTree(coords, leaf_size=2, metric='haversine')
+    coords = df[['latitude', 'longitude']].values
+    tree = KDTree(coords, leafsize=2) 
+    
     point = np.array([geocoding])
-    distances, indices = tree.query(point, k=2)
-    distances_km = distances * 6371
-    nearest_malls = df.iloc[indices[0]]
-    return distances_km,nearest_malls
+    
+    _, index = tree.query(point, k=1)
+    nearest_mall = df.iloc[index[0]]
+
+
+    distance_km = haversine(geocoding, (nearest_mall.loc['latitude'], nearest_mall.loc['longitude']), unit=Unit.KILOMETERS)
+    return distance_km,nearest_mall
     
 
 def get_house_data(input):
@@ -74,14 +82,14 @@ def get_house_data(input):
     encoder = OneHotEncoder(sparse=False)
     onehot = encoder.fit_transform(data[['neighbourhood_group_cleansed','room_type','bath_type']])
     data_dropped = data.drop(columns=['neighbourhood_group_cleansed', 'room_type', 'bath_type'])
-    onehot_df = pd.DataFrame(onehot, columns=encoder.get_feature_names(['neighbourhood_group_cleansed', 'room_type', 'bath_type']))
+    onehot_df = pd.DataFrame(onehot, columns=encoder.get_feature_names_out(['neighbourhood_group_cleansed', 'room_type', 'bath_type']))
     final_data = pd.concat([data_dropped, onehot_df], axis=1)
     
     input_dict = [input]  
     input_df = pd.DataFrame(input_dict)
 
     onehot_input = encoder.transform(input_df[['neighbourhood_group_cleansed', 'room_type', 'bath_type']])
-    onehot_input_df = pd.DataFrame(onehot_input, columns=encoder.get_feature_names(['neighbourhood_group_cleansed', 'room_type', 'bath_type']))
+    onehot_input_df = pd.DataFrame(onehot_input, columns=encoder.get_feature_names_out(['neighbourhood_group_cleansed', 'room_type', 'bath_type']))
 
     input_df_dropped = input_df.drop(columns=['neighbourhood_group_cleansed', 'room_type', 'bath_type'])
 
@@ -116,15 +124,17 @@ def df_to_amenities(raw):
 
 def house_to_draw(row_num,raw):
     amenities_list=df_to_amenities(raw)
+    room_info = str(getattr(raw, 'details'))
+    cleaned_room_info = re.sub(r'\?\?+', '. ', room_info)
     s1=[str(getattr(raw, 'HouseName')),
-        str(getattr(raw, 'details')),
+        cleaned_room_info,
         str(getattr(raw, 'neighbourhood_group_cleansed')),
         str(getattr(raw, 'accommodates'))+'accommodate',
         str(getattr(raw, 'room_type')),
-        str(amenities_list[0]),
-        str(amenities_list[1]),
-        str(amenities_list[2]),
-        str(amenities_list[3]),
+        amenities_list[0],
+        amenities_list[1],
+        amenities_list[2],
+        amenities_list[3],
         "S$ "+ str(getattr(raw, 'price'))+ "/month",
         str(int(getattr(raw, 'distance_to_mrt')*1000)) + "m to " + str(getattr(raw, 'closest_mrt_name')),
         str(int(getattr(raw, 'closest_mall_distance')*1000)) + "m to " + str(getattr(raw, 'closest_mall_name')) + "(" + str(getattr(raw, 'closest_mall_address')) + ")",
