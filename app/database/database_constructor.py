@@ -7,14 +7,18 @@ import os
 # from models import db,Rating,RentalHouse,User,Poi
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-house_file_path= './final_data.csv'
+house_file_path= './final_data_5002.csv'
 user_file_path='./userInfo_hashed.csv'
 poi_file_path='./poiInfo.csv'
 rating_file_path='./ratingInfo.csv'
+mrt_file_path='./mrt.csv'
+mall_file_path='./mall.csv'
 house_path = os.path.join(current_directory, house_file_path)
 user_path=os.path.join(current_directory, user_file_path)
 poi_path = os.path.join(current_directory, poi_file_path)
 rating_path=os.path.join(current_directory, rating_file_path)
+mrt_path=os.path.join(current_directory, mrt_file_path)
+mall_path=os.path.join(current_directory, mall_file_path)
 database_file_path = os.path.join(current_directory, 'database.db')
 
 
@@ -67,8 +71,24 @@ class RentalHouse(db.Model):
     review_scores_communication=db.Column(db.Float, nullable=False)
     review_scores_location=db.Column(db.Float, nullable=False)
     review_scores_value=db.Column(db.Float, nullable=False)
+    total_bedrooms=db.Column(db.Integer, nullable=False)
+    total_beds=db.Column(db.Integer, nullable=False)
+    total_baths=db.Column(db.Float, nullable=False)
+    bath_type=db.Column(db.Text, nullable=False)
 
-
+class MRT(db.Model):
+    MRTid = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    name=db.Column(db.Text, nullable=False)
+    stop_id=db.Column(db.Text, nullable=False)
+    
+class Mall(db.Model):
+    mallid=db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    name=db.Column(db.Text, nullable=False)
+    formatted_address=db.Column(db.Text, nullable=False)
 
 class User(db.Model, UserMixin):
     # __tablename__ = 'user'
@@ -257,9 +277,39 @@ def import_rental_data(house_path):
             review_scores_checkin=row['review_scores_checkin'],
             review_scores_communication=row['review_scores_communication'],
             review_scores_location=row['review_scores_location'],
-            review_scores_value=row['review_scores_value']
+            review_scores_value=row['review_scores_value'],
+            total_bedrooms=row['total_bedrooms'],
+            total_beds=row['total_beds'],
+            total_baths=row['total_baths'],
+            bath_type=row['bath_type']
         )
         db.session.add(house)
+    db.session.commit()
+
+def import_mrt_data(mrt_path):
+    df = pd.read_csv(mrt_path)
+    for index, row in df.iterrows():
+        mrt = MRT(
+            MRTid=index,
+            latitude=row.get('lat'),
+            longitude=row.get('lng'),
+            name=row.get('name'),
+            stop_id=row.get('stop_id')
+        )
+        db.session.add(mrt)
+    db.session.commit()
+    
+def import_mall_data(mall_path):
+    df = pd.read_csv(mall_path)
+    for index, row in df.iterrows():
+        mall = Mall(
+            mallid=index,
+            latitude=row.get('lat'),
+            longitude=row.get('lng'),
+            name=row.get('name'),
+            formatted_address=row.get('formatted_address')
+        )
+        db.session.add(mall)
     db.session.commit()
 
 def import_rating_data(rating_path):
@@ -394,10 +444,30 @@ def import_poi_data(poi_path):
 # Read Test Function
 def read_test():
     # Example: Read first 5 users
+    print('User reading test:')
     users = User.query.limit(5).all()
     for user in users:
         print(user.userID, user.userName)
-
+    print('Poi reading test:')
+    pois = Poi.query.limit(5).all()
+    for poi in pois:
+        print(poi.POIid, poi.name)
+    print('Rating reading test:')
+    ratings = Rating.query.limit(5).all()
+    for rating in ratings:
+        print(rating.ratingID, rating.rating)
+    print('Rental reading test:')
+    houses = RentalHouse.query.limit(5).all()
+    for house in houses:
+        print(house.HouseID, house.HouseName)
+    print('MRT reading test:')
+    mrts = MRT.query.limit(5).all()
+    for mrt in mrts:
+        print(mrt.MRTid, mrt.stop_id)
+    print('Mall reading test:')
+    malls = Mall.query.limit(5).all()
+    for mall in malls:
+        print(mall.mallid, mall.name)
     # Add more read tests as needed
 
 # Insert Test Function
@@ -437,7 +507,8 @@ if __name__ == '__main__':
         import_poi_data(poi_path)
         import_rating_data(rating_path)
         import_rental_data(house_path)
-
+        import_mrt_data(mrt_path)
+        import_mall_data(mall_path)
         # Perform Read Test
         read_test()
 

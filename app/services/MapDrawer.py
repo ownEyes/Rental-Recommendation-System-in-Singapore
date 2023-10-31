@@ -9,6 +9,7 @@ class MapDrawer:
         self.semantic_groups=semantic_groups
         self.color_group_mapping = dict(zip(colors, self.semantic_groups.keys()))
         self.map=None
+        self.cluster=None
         self.layer_list=[]
         self.__draw_poi()
         
@@ -39,7 +40,7 @@ class MapDrawer:
             zoom_on_click=True,
             tooltip=folium.GeoJsonTooltip(fields=["neighbourhood", "neighbourhood_group"], aliases=["", ""], labels=True, sticky=False), 
         ).add_to(self.map)
-        pass
+        pass    
     def __draw_poi(self):
         self.__draw_base()
         for color, group in self.color_group_mapping.items():
@@ -89,8 +90,6 @@ class MapDrawer:
         return popup
 
     def add_to_map(self, lat, lon, radius,name, website_url, picture_url, width=300, height=300):
-        
-        
         self.__draw_base()
         map =self.map
         for layer in self.layer_list:
@@ -126,3 +125,5 @@ class MapDrawer:
         layer.add_to(map)
         folium.LayerControl(collapsed=False).add_to(map)
         return map
+    
+    

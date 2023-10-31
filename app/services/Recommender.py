@@ -67,10 +67,15 @@ class Recommender:
         self.weighted_content_based_recommend_result = data.sort_values(by='weighted_similarity', ascending=False) 
         pass
     def content_based_recommendation(self, data,user_preference):
-        similarities = cosine_similarity(user_preference, data)
-        data['similarity'] = similarities.transpose()
+        if 'HouseID' in data.columns:
+            data_process = data.drop('HouseID', axis=1)
+
+        if 'similarity' in data_process.columns:
+            data_process = data_process.drop('similarity', axis=1)
+        data_vector = data_process.values
+        similarities = cosine_similarity(user_preference, data_vector)
         data['similarity']= similarities.transpose()
-        self.content_based_recommend_result = data.nlargest(self.recommend_num, 'similarity')
+        self.content_based_recommend_result = data.sort_values(by='similarity', ascending=False) 
         pass
 
     def content_based_recommendation_with_diversity(self, data,user_preference,weight_vector):
@@ -184,3 +189,8 @@ class Recommender:
         self.matrix_factorization_model = algo.fit(data.build_full_trainset())
         dump.dump(self.modelpath, algo=self.matrix_factorization_model)
         pass
+    
+    def get_similar(self):
+        result=self.content_based_recommend_result.head(self.recommend_num)
+        result_list=result['HouseID'].tolist()
+        return result_list

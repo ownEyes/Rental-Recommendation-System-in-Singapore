@@ -35,3 +35,32 @@ class SurveyForm(FlaskForm):
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField('Submit')
+    
+class QueryForm(FlaskForm):
+    minmonth = StringField("minmonth")
+    maxmonth = StringField("maxmonth")
+    region = StringField("region")
+    postcode = StringField("postcode")
+    numbedrooms = StringField("numbedrooms")
+    numbeds = StringField("numbeds")
+    numbathrooms = StringField("numbathrooms")
+    bathroomtype = StringField("bathroomtype")
+    roomtype = StringField("roomtype")
+    accommodates = StringField("accommodates")
+    #t_rating = StringField("importance_t")
+    #day_diff = StringField("dayDifference")
+    public_facilities = SelectMultipleField( 'public_facilities',
+        choices=[('BBQ', 'BBQ'), ('gym', 'Gym'),('pool', 'Pool'),('backyard', 'Backyard')]
+    )
+    cooking_facilities = SelectMultipleField( 'cooking_facilities',
+        choices=[('kitchen', 'Kitchen'),('refrigerator', 'Refrigerator'), ('microwave', 'Microwave'),('oven', 'Oven'),('stoven', 'Stoven')]
+    )
+    interior_facilities = SelectMultipleField( 'interior_facilities',
+        choices=[('aircon', 'Aircon'), ('dryer', 'Dryer'),('Wifi', 'Wifi'),('TV', 'TV'),('fan', 'Fan')]
+    )
+    other_needs = SelectMultipleField( 'other_needs',choices=[('pets', 'Pets')])
+    # kitchen_facilities = SelectMultipleField(
+    #     'kitchen_facilities',
+    #     choices=[('microwave', 'Microwave'), ('pot', 'Pot')]
+    # )
+    submit = SubmitField('Submit')

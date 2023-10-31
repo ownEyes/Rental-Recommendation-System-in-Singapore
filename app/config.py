@@ -118,6 +118,12 @@ class Config(object):
 
     COLORS = ['#8B0000', '#DC143C', '#FF7F50', '#CD5C5C', '#FA8072', '#FF8C00', '#FFD700', '#A52A2A', '#FF6347', '#FFA07A']
     MAP_CENTER=[1.3521, 103.8198] #center of Singapore
+    
+    STACKING_MODEL_PATH=os.path.join(basedir,'models', "stacking_model.joblib")
+    ENCODER_PATH=os.path.join(basedir,'models', "encoder.joblib")
+    SCALER_PATH=os.path.join(basedir,'models', "scaler.joblib")
+    LAMBDA_VALUE=0.17422263043540667
+    WORDCLOUD_PATH=os.path.join(basedir,'static','img', "wordcloud.png")
 
 
 class ProductionConfig(Config):

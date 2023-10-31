@@ -37,8 +37,8 @@ Install each required package by commandline during development.
 
 After development, check the version of packages then write a requirements.txt.
 ```
-conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter folium scikit-learn matplotlib langdetect python-flair textblob deap scikit-surprise dill
-pip install asent
+conda install flask wtforms flask-wtf flask-login flask-sqlalchemy flask-bcrypt numpy python-dotenv flask-migrate flask-minify pandas jupyter folium scikit-learn matplotlib langdetect python-flair textblob deap scikit-surprise dill shap wordcloud seaborn plotly xgboost lightgbm
+pip install asent tensorflow
 ```
 or run:
 ```

@@ -9,7 +9,7 @@ import requests
 import json
 
 from app.authentication.models import User
-from app.home.models import Rating, RentalHouse, Poi, Recommendation
+from app.home.models import Rating, RentalHouse, Poi, Mall,MRT
 # from app.config import GEOCODING_APIKEY
 
 import datetime
@@ -168,6 +168,63 @@ class FormData:
         return self.amenities_to_vector(all_selected_amenities)
 
 
+@dataclass
+class QueryData:
+    minmonth: int
+    maxmonth: int
+    region: str
+    postcode: str
+    numbedrooms: int
+    numbeds: int
+    numbathrooms: float
+    bathroomtype: str
+    roomtype: str
+    accommodates: int
+    vector: List[Any]
+    public_facilities: bool
+    cooking_facilities: bool
+    interior_facilities: bool
+    other_needs: str
+
+    @staticmethod
+    def get_geocoding(region,postcode):
+        GEOCODING_APIKEY=current_app.config['GEOCODING_APIKEY']
+        url = 'https://maps.googleapis.com/maps/api/geocode/json'
+        parameters = {
+            'address': region+", Singapore"+postcode,
+            'components': 'country:SG',
+            'key': GEOCODING_APIKEY
+        }
+        response = requests.get(url, params=parameters)
+        if response.status_code == 200:
+            data = response.json()
+            if data["status"] == "OK" and data["results"][0]["formatted_address"] != "Singapore":
+                geocoding = data["results"][0]["geometry"]["location"]
+                return [geocoding["lat"], geocoding["lng"]]
+            else:
+                print("Invalid query")
+                return [1.352083,103.819836]
+        else:
+            print('Request failed with status code:', response.status_code)
+            return [1.352083,103.819836]
+        
+    def amenities_to_vector(self,amenities_list):
+        reference_list = ['aircon', 'BBQ', 'gym', 'pool', 'dryer', 'Wifi', 'kitchen', 'Backyard', 'TV', 'refrigerator', 'Microwave', 'Oven', 'Pets', 'stove', 'fan']
+        self.vector = [0] * len(reference_list)
+        amenity_mapping = {
+            'microwave': 'Microwave',
+            'pets': 'Pets',
+            'backyard': 'Backyard',
+            'oven': 'Oven',
+            'stoven': 'stove'
+        }
+        for amenities in amenities_list:
+            for amenity in amenities:
+                standardized_amenity = amenity_mapping.get(amenity, amenity)
+                if standardized_amenity in reference_list:
+                    self.vector[reference_list.index(standardized_amenity)] = 1
+        return self.vector
+
 class DataManager:
     def __init__(self,app):
         self.db = app.extensions['sqlalchemy'].db
@@ -199,6 +256,7 @@ class DataManager:
     def get_rating(self, user_id: int) -> List[Rating]:
         """Get a poi by ID."""
         return self.get_by_id(Rating, user_id)
+    
 
     def get_poi(self, poi_id: int) -> Optional[Poi]:
         """Get a poi by ID."""
@@ -228,6 +286,12 @@ class DataManager:
     def get_ratings_df(self, columns: List[str]) -> pd.DataFrame:
         """Get specific columns of all rows in a table."""
         return self.get_df_from_columns(Rating, columns)
+    
+    def get_mrts_df(self,columns: List[str]) -> pd.DataFrame:
+        return self.get_df_from_columns(MRT, columns)
+    
+    def get_malls_df(self,columns: List[str]) -> pd.DataFrame:
+        return self.get_df_from_columns(Mall, columns)
     
     def get_pois_df(self, columns: List[str]) -> pd.DataFrame:
         """Get specific columns of all rows in a table."""

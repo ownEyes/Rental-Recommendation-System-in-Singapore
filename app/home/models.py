@@ -45,6 +45,10 @@ class RentalHouse(db.Model):
     review_scores_communication=db.Column(db.Float, nullable=False)
     review_scores_location=db.Column(db.Float, nullable=False)
     review_scores_value=db.Column(db.Float, nullable=False)
+    total_bedrooms=db.Column(db.Integer, nullable=False)
+    total_beds=db.Column(db.Integer, nullable=False)
+    total_baths=db.Column(db.Float, nullable=False)
+    bath_type=db.Column(db.Text, nullable=False)
 
 
 class Rating(db.Model):
@@ -166,23 +170,37 @@ class Poi(db.Model):
     natural_feature = db.Column(db.Boolean, nullable=False)
     subpremise = db.Column(db.Boolean, nullable=False)
 
-class Recommendation(db.Model):
-    __tablename__ = 'recommendations'
+# class Recommendation(db.Model):
+#     __tablename__ = 'recommendations'
     
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    popularity_based = db.Column(db.String, nullable=True)
-    content_based = db.Column(db.String, nullable=True)
-    content_based_diversity = db.Column(db.String, nullable=True)
-    matrix_factorization = db.Column(db.String, nullable=True)
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, nullable=False)
+#     popularity_based = db.Column(db.String, nullable=True)
+#     content_based = db.Column(db.String, nullable=True)
+#     content_based_diversity = db.Column(db.String, nullable=True)
+#     matrix_factorization = db.Column(db.String, nullable=True)
     
-    def __init__(self, user_id, popularity_based=None, content_based=None, content_based_diversity=None, matrix_factorization=None):
-        self.user_id = user_id
-        self.popularity_based = popularity_based
-        self.content_based = content_based
-        self.content_based_diversity = content_based_diversity
-        self.matrix_factorization = matrix_factorization
+#     def __init__(self, user_id, popularity_based=None, content_based=None, content_based_diversity=None, matrix_factorization=None):
+#         self.user_id = user_id
+#         self.popularity_based = popularity_based
+#         self.content_based = content_based
+#         self.content_based_diversity = content_based_diversity
+#         self.matrix_factorization = matrix_factorization
     
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
+#     def save(self):
+#         db.session.add(self)
+#         db.session.commit()
+
+class MRT(db.Model):
+    MRTid = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    name=db.Column(db.Text, nullable=False)
+    stop_id=db.Column(db.Text, nullable=False)
+    
+class Mall(db.Model):
+    mallid=db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    name=db.Column(db.Text, nullable=False)
+    formatted_address=db.Column(db.Text, nullable=False)

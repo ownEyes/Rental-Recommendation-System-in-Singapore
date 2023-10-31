@@ -16,6 +16,7 @@ from app.services.DataManger import DataManager
 from app.services.MapDrawer import MapDrawer
 from app.services.Recommender import Recommender
 from app.services.RatingEstimator import RatingEstimator
+from app.services.Forcaster import Forcaster
 
 # bootstrap = Bootstrap5()
 
@@ -84,6 +85,14 @@ def register_services(app):
     app.recommender = Recommender(MF_modelpath,topn,alpha,svd_param)
     RF_modelpath=app.config['RF_MODEL_PATH']
     app.rating_estimator = RatingEstimator(RF_modelpath)
+    
+    stacking_model_path=app.config['STACKING_MODEL_PATH']
+    encoder_path=app.config['ENCODER_PATH']
+    scaler_path=app.config['SCALER_PATH']
+    lambda_value=app.config['LAMBDA_VALUE']
+    app.forcaster=Forcaster(stacking_model_path,scaler_path,encoder_path,lambda_value)
+    
+    
 
 
 def create_app(config):
