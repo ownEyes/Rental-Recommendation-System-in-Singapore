@@ -13,9 +13,7 @@ from importlib import import_module
 from flask_wtf.csrf import CSRFProtect
 from app.extension import db,bcrypt,login_manager
 from app.services.DataManger import DataManager
-from app.services.MapDrawer import MapDrawer
 from app.services.Recommender import Recommender
-from app.services.RatingEstimator import RatingEstimator
 from app.services.Forcaster import Forcaster
 
 # bootstrap = Bootstrap5()
@@ -69,22 +67,22 @@ def configure_database(app):
 
 def register_services(app):
     app.data_manager = DataManager(app)
-    poi_cols=app.config['POI_COLUMNS']
-    poi_df= app.data_manager.get_pois_df(poi_cols+["name","formatted_address",'lat', 'lng'])
+    # poi_cols=app.config['POI_COLUMNS']
+    # poi_df= app.data_manager.get_pois_df(poi_cols+["name","formatted_address",'lat', 'lng'])
     
-    mapcenter=app.config['MAP_CENTER']
-    geojson_file_path=app.config['GEOJSON_FILE_PATH']
-    semantic_groups=app.config['SEMANTIC_GROUPS']
-    colors=app.config['COLORS']
-    app.map_drawer = MapDrawer(poi_df,mapcenter,geojson_file_path,semantic_groups,colors)
+    # mapcenter=app.config['MAP_CENTER']
+    # geojson_file_path=app.config['GEOJSON_FILE_PATH']
+    # semantic_groups=app.config['SEMANTIC_GROUPS']
+    # colors=app.config['COLORS']
+    # app.map_drawer = MapDrawer(poi_df,mapcenter,geojson_file_path,semantic_groups,colors)
 
     MF_modelpath=app.config['MF_MODEL_PATH']
     topn=app.config['RECOMMEND_DEFAULT_TOPN']
     alpha=app.config['ALPHA']
     svd_param=app.config['SVD_PARAM']
     app.recommender = Recommender(MF_modelpath,topn,alpha,svd_param)
-    RF_modelpath=app.config['RF_MODEL_PATH']
-    app.rating_estimator = RatingEstimator(RF_modelpath)
+    # RF_modelpath=app.config['RF_MODEL_PATH']
+    # app.rating_estimator = RatingEstimator(RF_modelpath)
     
     stacking_model_path=app.config['STACKING_MODEL_PATH']
     encoder_path=app.config['ENCODER_PATH']

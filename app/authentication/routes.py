@@ -81,7 +81,7 @@ def collect_data():
 @blueprint.route('/submit_login', methods=['Get','POST'])
 def submit_login():
     from app.authentication.models import User
-    from app.services.DataProcessing import df_to_amenities,get_ratings
+    # from app.services.DataProcessing import df_to_amenities,get_ratings
     # username = loginForm.username.data
     # password = loginForm.password.data
     username = request.form.get('Username')

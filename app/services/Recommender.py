@@ -9,7 +9,6 @@ from surprise import Reader
 from surprise import dump
 import os
 # from DataManger import FormData
-from app.services.GeneticAlgorithm import genetic_algorithm
 
 class Recommender:
     def __init__(self, modelpath,topn,alpha,svd_param): 
@@ -78,23 +77,23 @@ class Recommender:
         self.content_based_recommend_result = data.sort_values(by='similarity', ascending=False) 
         pass
 
-    def content_based_recommendation_with_diversity(self, data,user_preference,weight_vector):
-        self.weighted_content_based_recommendation(data,user_preference,weight_vector)
-        item_features=self.weighted_content_based_recommend_result
-        item_features = item_features[item_features['weighted_similarity'] >= 0]
-        item_features_without_similarity = item_features.drop(['weighted_similarity', 'HouseID'], axis=1)
-        item_features = item_features.reset_index(drop=True)
-        similarity_matrix = cosine_similarity(item_features_without_similarity)
+    # def content_based_recommendation_with_diversity(self, data,user_preference,weight_vector):
+    #     self.weighted_content_based_recommendation(data,user_preference,weight_vector)
+    #     item_features=self.weighted_content_based_recommend_result
+    #     item_features = item_features[item_features['weighted_similarity'] >= 0]
+    #     item_features_without_similarity = item_features.drop(['weighted_similarity', 'HouseID'], axis=1)
+    #     item_features = item_features.reset_index(drop=True)
+    #     similarity_matrix = cosine_similarity(item_features_without_similarity)
 
-        diversity_matrix = 1 - similarity_matrix
-        id_to_index = {row['HouseID']: index for index, row in item_features.iterrows()}
+    #     diversity_matrix = 1 - similarity_matrix
+    #     id_to_index = {row['HouseID']: index for index, row in item_features.iterrows()}
 
 
-        # for epsilon in np.linspace(0, 0.5, 1):
-        epsilon=0.2
-        recommendation, score = genetic_algorithm(item_features, epsilon, self.recommend_num,diversity_matrix,id_to_index)
-        self.content_based_recommend_with_diversity_result = item_features.loc[item_features['HouseID'].isin(recommendation)]
-        pass
+    #     # for epsilon in np.linspace(0, 0.5, 1):
+    #     epsilon=0.2
+    #     recommendation, score = genetic_algorithm(item_features, epsilon, self.recommend_num,diversity_matrix,id_to_index)
+    #     self.content_based_recommend_with_diversity_result = item_features.loc[item_features['HouseID'].isin(recommendation)]
+    #     pass
     
     def matrix_factorization_recommendation(self, user_id, df):
         if 'user_id' not in df.columns or 'item_id' not in df.columns:
