@@ -84,12 +84,25 @@ class Forcaster:
 
         # Calculate SHAP values for each base model
         for model in base_models:
-            if isinstance(model, (sklearn.tree.DecisionTreeRegressor, sklearn.ensemble.RandomForestRegressor)):
+            if isinstance(model, sklearn.ensemble.RandomForestRegressor):
                 explainer = shap.TreeExplainer(model)
                 shap_values = explainer.shap_values(self.input)
                 shap_values_list.append(shap_values)
-            elif isinstance(model, (sklearn.linear_model.LinearRegression, sklearn.linear_model.Ridge)):
-                explainer = shap.LinearExplainer(model, self.input)
+            # elif isinstance(model, (sklearn.linear_model.LinearRegression, sklearn.linear_model.Ridge)):
+            #     explainer = shap.LinearExplainer(model, X_input)
+            #     shap_values = explainer.shap_values(X_input)
+            #     shap_values_list.append(shap_values)
+            # Add more elif blocks for other supported model types
+            elif isinstance(model, XGBRegressor):
+                explainer = shap.TreeExplainer(model)
+                shap_values = explainer.shap_values(self.input)
+                shap_values_list.append(shap_values)
+            elif isinstance(model, lgb.LGBMRegressor):
+                explainer = shap.TreeExplainer(model)
+                shap_values = explainer.shap_values(self.input)
+                shap_values_list.append(shap_values)
+            elif isinstance(model, sklearn.ensemble.GradientBoostingRegressor):
+                explainer = shap.TreeExplainer(model)
                 shap_values = explainer.shap_values(self.input)
                 shap_values_list.append(shap_values)
             # Add more elif blocks for other supported model types
