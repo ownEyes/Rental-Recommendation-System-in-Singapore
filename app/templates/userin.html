@@ -352,7 +352,7 @@
                     } 
                 }
                 
-                $("#userin").submit(function(e) {
+                $("#userin").off('submit').submit(function(e) {
                     e.preventDefault();
                     var formData = $(this).serialize();
 

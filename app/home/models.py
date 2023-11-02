@@ -1,8 +1,22 @@
 from app.extension import db
 
+
+class Calendar(db.Model):
+    # __tablename__ = 'listings'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    listing_id = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<Listing {self.listing_id} {self.date} {self.price}>'
+
+
 class RentalHouse(db.Model):
     # __tablename__ = 'RentalHouse'
-    HouseID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    HouseID = db.Column(db.Integer, primary_key=True,
+                        nullable=False, autoincrement=True)
     HouseName = db.Column(db.Text, nullable=False)
     details = db.Column(db.Text, nullable=False)
     neighbourhood_cleansed = db.Column(db.Text, nullable=False)
@@ -11,7 +25,7 @@ class RentalHouse(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
     room_type = db.Column(db.Text, nullable=False)
-    accommodates= db.Column(db.Integer, nullable=False)
+    accommodates = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     minimum_months = db.Column(db.Integer, nullable=False)
     maximum_months = db.Column(db.Integer, nullable=False)
@@ -36,19 +50,19 @@ class RentalHouse(db.Model):
     Pets = db.Column(db.Boolean, nullable=False)
     stove = db.Column(db.Boolean, nullable=False)
     fan = db.Column(db.Boolean, nullable=False)
-    accommodates=db.Column(db.Integer, nullable=False)
+    accommodates = db.Column(db.Integer, nullable=False)
     listing_url = db.Column(db.Text, nullable=False)
-    review_scores_rating=db.Column(db.Float, nullable=False)
-    review_scores_accuracy=db.Column(db.Float, nullable=False)
-    review_scores_cleanliness=db.Column(db.Float, nullable=False)
-    review_scores_checkin=db.Column(db.Float, nullable=False)
-    review_scores_communication=db.Column(db.Float, nullable=False)
-    review_scores_location=db.Column(db.Float, nullable=False)
-    review_scores_value=db.Column(db.Float, nullable=False)
-    total_bedrooms=db.Column(db.Integer, nullable=False)
-    total_beds=db.Column(db.Integer, nullable=False)
-    total_baths=db.Column(db.Float, nullable=False)
-    bath_type=db.Column(db.Text, nullable=False)
+    review_scores_rating = db.Column(db.Float, nullable=False)
+    review_scores_accuracy = db.Column(db.Float, nullable=False)
+    review_scores_cleanliness = db.Column(db.Float, nullable=False)
+    review_scores_checkin = db.Column(db.Float, nullable=False)
+    review_scores_communication = db.Column(db.Float, nullable=False)
+    review_scores_location = db.Column(db.Float, nullable=False)
+    review_scores_value = db.Column(db.Float, nullable=False)
+    total_bedrooms = db.Column(db.Integer, nullable=False)
+    total_beds = db.Column(db.Integer, nullable=False)
+    total_baths = db.Column(db.Float, nullable=False)
+    bath_type = db.Column(db.Text, nullable=False)
 
 
 class Rating(db.Model):
@@ -57,15 +71,16 @@ class Rating(db.Model):
     userID = db.Column(db.Integer)
     listing_id = db.Column(db.Integer)
     rating = db.Column(db.Float)
-    comments=db.Column(db.Text)
+    comments = db.Column(db.Text)
+
 
 class Poi(db.Model):
     # __tablename__ = 'poi'
-    POIid = db.Column(db.Integer, primary_key=True,autoincrement=True)
-    name= db.Column(db.String)
-    lat= db.Column(db.Float)
-    lng= db.Column(db.Float)
-    formatted_address= db.Column(db.String)
+    POIid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String)
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    formatted_address = db.Column(db.String)
     store = db.Column(db.Boolean, nullable=False)
     food = db.Column(db.Boolean, nullable=False)
     health = db.Column(db.Boolean, nullable=False)
@@ -172,35 +187,39 @@ class Poi(db.Model):
 
 # class Recommendation(db.Model):
 #     __tablename__ = 'recommendations'
-    
+
 #     id = db.Column(db.Integer, primary_key=True)
 #     user_id = db.Column(db.Integer, nullable=False)
 #     popularity_based = db.Column(db.String, nullable=True)
 #     content_based = db.Column(db.String, nullable=True)
 #     content_based_diversity = db.Column(db.String, nullable=True)
 #     matrix_factorization = db.Column(db.String, nullable=True)
-    
+
 #     def __init__(self, user_id, popularity_based=None, content_based=None, content_based_diversity=None, matrix_factorization=None):
 #         self.user_id = user_id
 #         self.popularity_based = popularity_based
 #         self.content_based = content_based
 #         self.content_based_diversity = content_based_diversity
 #         self.matrix_factorization = matrix_factorization
-    
+
 #     def save(self):
 #         db.session.add(self)
 #         db.session.commit()
 
+
 class MRT(db.Model):
-    MRTid = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    MRTid = db.Column(db.Integer, primary_key=True,
+                      nullable=False, autoincrement=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    name=db.Column(db.Text, nullable=False)
-    stop_id=db.Column(db.Text, nullable=False)
-    
+    name = db.Column(db.Text, nullable=False)
+    stop_id = db.Column(db.Text, nullable=False)
+
+
 class Mall(db.Model):
-    mallid=db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    mallid = db.Column(db.Integer, primary_key=True,
+                       nullable=False, autoincrement=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    name=db.Column(db.Text, nullable=False)
-    formatted_address=db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    formatted_address = db.Column(db.Text, nullable=False)

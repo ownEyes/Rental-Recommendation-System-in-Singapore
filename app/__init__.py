@@ -11,7 +11,7 @@ from flask import Flask
 from importlib import import_module
 
 from flask_wtf.csrf import CSRFProtect
-from app.extension import db,bcrypt,login_manager
+from app.extension import db, bcrypt, login_manager
 from app.services.DataManger import DataManager
 from app.services.Recommender import Recommender
 from app.services.Forcaster import Forcaster
@@ -24,7 +24,7 @@ csrf = CSRFProtect()
 # logger = logging.getLogger("my_logger")
 
 # def register_logger(logger):
-    
+
 #     logger.setLevel(logging.DEBUG)
 #     console_handler = logging.StreamHandler()
 #     console_handler.setLevel(logging.DEBUG)
@@ -32,6 +32,7 @@ csrf = CSRFProtect()
 #     console_handler.setFormatter(formatter)
 #     logger.addHandler(console_handler)
 #     return logger
+
 
 def register_extensions(app):
     db.init_app(app)
@@ -41,7 +42,7 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    for module_name in ('authentication','util', 'home'):
+    for module_name in ('authentication', 'util', 'home'):
         module = import_module('app.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
@@ -56,41 +57,43 @@ def configure_database(app):
 
             # fallback to SQLite
             basedir = os.path.abspath(os.path.dirname(__file__))
-            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database', 'database.db')
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+                os.path.join(basedir, 'database', 'database.db')
 
             print('> Fallback to SQLite ')
             db.create_all()
 
     @app.teardown_request
     def shutdown_session(exception=None):
-        db.session.remove() 
+        db.session.remove()
+
 
 def register_services(app):
     app.data_manager = DataManager(app)
     # poi_cols=app.config['POI_COLUMNS']
     # poi_df= app.data_manager.get_pois_df(poi_cols+["name","formatted_address",'lat', 'lng'])
-    
+
     # mapcenter=app.config['MAP_CENTER']
     # geojson_file_path=app.config['GEOJSON_FILE_PATH']
     # semantic_groups=app.config['SEMANTIC_GROUPS']
     # colors=app.config['COLORS']
     # app.map_drawer = MapDrawer(poi_df,mapcenter,geojson_file_path,semantic_groups,colors)
 
-    MF_modelpath=app.config['MF_MODEL_PATH']
-    topn=app.config['RECOMMEND_DEFAULT_TOPN']
-    alpha=app.config['ALPHA']
-    svd_param=app.config['SVD_PARAM']
-    app.recommender = Recommender(MF_modelpath,topn,alpha,svd_param)
+    MF_modelpath = app.config['MF_MODEL_PATH']
+    topn = app.config['RECOMMEND_DEFAULT_TOPN']
+    alpha = app.config['ALPHA']
+    svd_param = app.config['SVD_PARAM']
+    app.recommender = Recommender(MF_modelpath, topn, alpha, svd_param)
     # RF_modelpath=app.config['RF_MODEL_PATH']
     # app.rating_estimator = RatingEstimator(RF_modelpath)
-    
-    stacking_model_path=app.config['STACKING_MODEL_PATH']
-    encoder_path=app.config['ENCODER_PATH']
-    scaler_path=app.config['SCALER_PATH']
-    lambda_value=app.config['LAMBDA_VALUE']
-    app.forcaster=Forcaster(stacking_model_path,scaler_path,encoder_path,lambda_value)
-    
-    
+
+    stacking_model_path = app.config['STACKING_MODEL_PATH']
+    encoder_path = app.config['ENCODER_PATH']
+    scaler_path = app.config['SCALER_PATH']
+    lambda_value = app.config['LAMBDA_VALUE']
+    time_series_path = app.config['TIME_SERIES_PATH']
+    app.forcaster = Forcaster(
+        stacking_model_path, time_series_path, scaler_path, encoder_path, lambda_value)
 
 
 def create_app(config):

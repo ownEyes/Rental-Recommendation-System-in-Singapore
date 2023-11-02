@@ -1,34 +1,50 @@
 from flask import Flask
 # from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from flask_login import UserMixin
 import pandas as pd
 import os
 # from models import db,Rating,RentalHouse,User,Poi
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-house_file_path= './final_data_5002.csv'
-user_file_path='./userInfo_hashed.csv'
-poi_file_path='./poiInfo.csv'
-rating_file_path='./ratingInfo.csv'
-mrt_file_path='./mrt.csv'
-mall_file_path='./mall.csv'
+house_file_path = './final_data_5002.csv'
+user_file_path = './userInfo_hashed.csv'
+poi_file_path = './poiInfo.csv'
+rating_file_path = './ratingInfo.csv'
+mrt_file_path = './mrt.csv'
+mall_file_path = './mall.csv'
+calendar_file_path = './calendar_5002.csv'
 house_path = os.path.join(current_directory, house_file_path)
-user_path=os.path.join(current_directory, user_file_path)
+user_path = os.path.join(current_directory, user_file_path)
 poi_path = os.path.join(current_directory, poi_file_path)
-rating_path=os.path.join(current_directory, rating_file_path)
-mrt_path=os.path.join(current_directory, mrt_file_path)
-mall_path=os.path.join(current_directory, mall_file_path)
+rating_path = os.path.join(current_directory, rating_file_path)
+mrt_path = os.path.join(current_directory, mrt_file_path)
+mall_path = os.path.join(current_directory, mall_file_path)
 database_file_path = os.path.join(current_directory, 'database.db')
-
+calendar_path = os.path.join(current_directory, calendar_file_path)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + database_file_path
 db = SQLAlchemy(app)
 
+
+class Calendar(db.Model):
+    # __tablename__ = 'listings'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    listing_id = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<Listing {self.listing_id} {self.date} {self.price}>'
+
+
 class RentalHouse(db.Model):
     # __tablename__ = 'RentalHouse'
-    HouseID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    HouseID = db.Column(db.Integer, primary_key=True,
+                        nullable=False, autoincrement=True)
     HouseName = db.Column(db.Text, nullable=False)
     details = db.Column(db.Text, nullable=False)
     neighbourhood_cleansed = db.Column(db.Text, nullable=False)
@@ -37,7 +53,7 @@ class RentalHouse(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
     room_type = db.Column(db.Text, nullable=False)
-    accommodates= db.Column(db.Integer, nullable=False)
+    accommodates = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     minimum_months = db.Column(db.Integer, nullable=False)
     maximum_months = db.Column(db.Integer, nullable=False)
@@ -62,37 +78,42 @@ class RentalHouse(db.Model):
     Pets = db.Column(db.Boolean, nullable=False)
     stove = db.Column(db.Boolean, nullable=False)
     fan = db.Column(db.Boolean, nullable=False)
-    accommodates=db.Column(db.Integer, nullable=False)
+    accommodates = db.Column(db.Integer, nullable=False)
     listing_url = db.Column(db.Text, nullable=False)
-    review_scores_rating=db.Column(db.Float, nullable=False)
-    review_scores_accuracy=db.Column(db.Float, nullable=False)
-    review_scores_cleanliness=db.Column(db.Float, nullable=False)
-    review_scores_checkin=db.Column(db.Float, nullable=False)
-    review_scores_communication=db.Column(db.Float, nullable=False)
-    review_scores_location=db.Column(db.Float, nullable=False)
-    review_scores_value=db.Column(db.Float, nullable=False)
-    total_bedrooms=db.Column(db.Integer, nullable=False)
-    total_beds=db.Column(db.Integer, nullable=False)
-    total_baths=db.Column(db.Float, nullable=False)
-    bath_type=db.Column(db.Text, nullable=False)
+    review_scores_rating = db.Column(db.Float, nullable=False)
+    review_scores_accuracy = db.Column(db.Float, nullable=False)
+    review_scores_cleanliness = db.Column(db.Float, nullable=False)
+    review_scores_checkin = db.Column(db.Float, nullable=False)
+    review_scores_communication = db.Column(db.Float, nullable=False)
+    review_scores_location = db.Column(db.Float, nullable=False)
+    review_scores_value = db.Column(db.Float, nullable=False)
+    total_bedrooms = db.Column(db.Integer, nullable=False)
+    total_beds = db.Column(db.Integer, nullable=False)
+    total_baths = db.Column(db.Float, nullable=False)
+    bath_type = db.Column(db.Text, nullable=False)
+
 
 class MRT(db.Model):
-    MRTid = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    MRTid = db.Column(db.Integer, primary_key=True,
+                      nullable=False, autoincrement=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    name=db.Column(db.Text, nullable=False)
-    stop_id=db.Column(db.Text, nullable=False)
-    
+    name = db.Column(db.Text, nullable=False)
+    stop_id = db.Column(db.Text, nullable=False)
+
+
 class Mall(db.Model):
-    mallid=db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    mallid = db.Column(db.Integer, primary_key=True,
+                       nullable=False, autoincrement=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    name=db.Column(db.Text, nullable=False)
-    formatted_address=db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    formatted_address = db.Column(db.Text, nullable=False)
+
 
 class User(db.Model, UserMixin):
     # __tablename__ = 'user'
-    userID = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    userID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userName = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
 
@@ -102,21 +123,23 @@ class User(db.Model, UserMixin):
     def get_id(self):
         return self.userID
 
+
 class Rating(db.Model):
     # __tablename__ = 'rating'
     ratingID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userID = db.Column(db.Integer)
     listing_id = db.Column(db.Integer)
     rating = db.Column(db.Float)
-    comments=db.Column(db.Text)
+    comments = db.Column(db.Text)
+
 
 class Poi(db.Model):
     # __tablename__ = 'poi'
-    POIid = db.Column(db.Integer, primary_key=True,autoincrement=True)
-    name= db.Column(db.String)
-    lat= db.Column(db.Float)
-    lng= db.Column(db.Float)
-    formatted_address= db.Column(db.String)
+    POIid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String)
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    formatted_address = db.Column(db.String)
     store = db.Column(db.Boolean, nullable=False)
     food = db.Column(db.Boolean, nullable=False)
     health = db.Column(db.Boolean, nullable=False)
@@ -221,6 +244,7 @@ class Poi(db.Model):
     natural_feature = db.Column(db.Boolean, nullable=False)
     subpremise = db.Column(db.Boolean, nullable=False)
 
+
 def import_user_data(user_path):
     df = pd.read_csv(user_path)
     for index, row in df.iterrows():
@@ -231,6 +255,7 @@ def import_user_data(user_path):
         )
         db.session.add(user)
     db.session.commit()
+
 
 def import_rental_data(house_path):
     df = pd.read_csv(house_path)
@@ -286,6 +311,7 @@ def import_rental_data(house_path):
         db.session.add(house)
     db.session.commit()
 
+
 def import_mrt_data(mrt_path):
     df = pd.read_csv(mrt_path)
     for index, row in df.iterrows():
@@ -298,7 +324,8 @@ def import_mrt_data(mrt_path):
         )
         db.session.add(mrt)
     db.session.commit()
-    
+
+
 def import_mall_data(mall_path):
     df = pd.read_csv(mall_path)
     for index, row in df.iterrows():
@@ -312,6 +339,7 @@ def import_mall_data(mall_path):
         db.session.add(mall)
     db.session.commit()
 
+
 def import_rating_data(rating_path):
     df = pd.read_csv(rating_path)
     for index, row in df.iterrows():
@@ -324,6 +352,21 @@ def import_rating_data(rating_path):
         )
         db.session.add(rating)
     db.session.commit()
+
+
+def import_calendar_data(calendar_path):
+    df = pd.read_csv(calendar_path)
+    for index, row in df.iterrows():
+        calendar = Calendar(
+            id=index,
+            listing_id=row.get('listing_id'),
+            date=datetime.strptime(
+                row.get('date'), '%Y-%m-%d').date(),
+            price=row.get('price'),
+        )
+        db.session.add(calendar)
+    db.session.commit()
+
 
 def import_poi_data(poi_path):
     df = pd.read_csv(poi_path)
@@ -442,6 +485,8 @@ def import_poi_data(poi_path):
     db.session.commit()
 
 # Read Test Function
+
+
 def read_test():
     # Example: Read first 5 users
     print('User reading test:')
@@ -468,9 +513,15 @@ def read_test():
     malls = Mall.query.limit(5).all()
     for mall in malls:
         print(mall.mallid, mall.name)
+    print('Calendar reading test:')
+    calendars = Calendar.query.limit(5).all()
+    for calendar in calendars:
+        print(calendar.id, calendar.listing_id)
     # Add more read tests as needed
 
 # Insert Test Function
+
+
 def insert_test():
     # Example: Insert a test user without setting userID
     test_user = User(userName='TestUser', password='TestPassword')
@@ -478,14 +529,18 @@ def insert_test():
     db.session.commit()
 
     # Verify if test user is inserted
-    inserted_user = User.query.filter_by(userName='TestUser', password='TestPassword').first()
+    inserted_user = User.query.filter_by(
+        userName='TestUser', password='TestPassword').first()
     if inserted_user:
-        print(f'Insert Test Passed: User with userName TestUser is inserted with userID {inserted_user.userID}.')
+        print(
+            f'Insert Test Passed: User with userName TestUser is inserted with userID {inserted_user.userID}.')
         return True, inserted_user.userID
     else:
         print('Insert Test Failed: User with userName TestUser is not found.')
         return False, None
 # Delete Test Data Function
+
+
 def delete_test_data():
     # Example: Delete the test user
     test_user = User.query.filter_by(userName='TestUser').first()
@@ -497,11 +552,10 @@ def delete_test_data():
         print('Test data not found.')
 
 
-
 if __name__ == '__main__':
-    
+
     with app.app_context():
-        db.drop_all()  
+        db.drop_all()
         db.create_all()
         import_user_data(user_path)
         import_poi_data(poi_path)
@@ -509,6 +563,7 @@ if __name__ == '__main__':
         import_rental_data(house_path)
         import_mrt_data(mrt_path)
         import_mall_data(mall_path)
+        import_calendar_data(calendar_path)
         # Perform Read Test
         read_test()
 

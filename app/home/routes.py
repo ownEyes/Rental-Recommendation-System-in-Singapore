@@ -1,8 +1,11 @@
 from flask import render_template, request, redirect, url_for, current_app, jsonify
 import flask_wtf as wtf
+import plotly.graph_objects as go
 from flask_login import current_user, login_required
 from folium.plugins import MarkerCluster
 import folium
+import plotly.express as px
+import plotly.offline as pyo
 from app.home.models import Rating
 from app.home.forms import SurveyForm, CommentForm, QueryForm
 from app.services.DataManger import FormData
@@ -107,6 +110,7 @@ from app.home.mywordcloud import *
 
 
 user_input_data = {}
+lists = []
 
 
 @blueprint.route('/userin', methods=['GET', 'POST'])
@@ -161,9 +165,10 @@ def submit_data():
                  'total_bedrooms': int(user_input_data['numbedrooms']), 'total_beds': int(user_input_data['numbeds']),
                  'total_baths': float(user_input_data['numbathrooms']), 'bath_type': user_input_data['bathroomtype'], }
         current_app.forcaster.load_input(input)
-        data, input_vec = get_house_data(input)
-        current_app.recommender.content_based_recommendation(data, input_vec)
         user_input_data['price'] = current_app.forcaster.predict()
+        data, input_vec = get_house_data(input, int(user_input_data['price']))
+        current_app.recommender.content_based_recommendation(data, input_vec)
+        # lists = find_similar(data, input_vec)
         return redirect(url_for('home_blueprint.mapgenerate'))
         # return ("success")
 
@@ -199,7 +204,36 @@ def mapgenerate():
     columns = ['name', 'details', 'region', 'accommodation_info', 'room_type', 'public_facilities', 'cooking_facilities',
                'interior_facilities', 'other_needs', 'price', 'distance_to_mrt', 'mall_info', 'latitude', 'longitude']
 
-    userin = ['The information of your own residents', str(user_input_data.get('numbedrooms', '')+' bedroom · '+user_input_data.get('numbeds', '')+' bed · ' + user_input_data.get('numbathrooms', '') + ' '+user_input_data.get('bathroomtype', '') + ' bath'), user_input_data.get('region', ''), str(user_input_data.get('accommodates', '') + ' accommodate'), user_input_data.get('roomtype', ''),
+    num_bedrooms = user_input_data.get('numbedrooms', '')
+    num_bedrooms = int(num_bedrooms)
+    print(num_bedrooms)
+    num_beds = user_input_data.get('numbeds', '')
+    num_beds = int(num_beds)
+    num_bathrooms = user_input_data.get('numbathrooms', '')
+    num_bathrooms = float(num_bathrooms)
+    bathroom_type = user_input_data.get('bathroomtype', '')
+    print(type(num_bedrooms))
+    # 生成对应的描述文本
+    if num_bedrooms == 1:
+        bedrooms_text = 'bedroom'
+    else:
+        bedrooms_text = 'bedrooms'
+
+    if num_beds == 1:
+        beds_text = 'bed'
+    else:
+        beds_text = 'beds'
+
+    if num_bathrooms == 1:
+        bathrooms_text = 'bath'
+    else:
+        bathrooms_text = 'baths'
+
+    userin = ['The information of your own residents',
+              f"{num_bedrooms} {bedrooms_text} · {num_beds} {beds_text} · {num_bathrooms} {bathroom_type} {bathrooms_text} ",
+              user_input_data.get('region', ''),
+              f"{user_input_data.get('accommodates', '')} accommodate",
+              user_input_data.get('roomtype', ''),
               user_input_data.get('public_facilities', ''), user_input_data.get('cooking_facilities', ''), user_input_data.get(
                   'interior_facilities', ''), user_input_data.get('other_needs', ''), 'S$ '+str(int(user_input_data.get('price', '')))+' /month',
               str(int(user_input_data.get('mrt_dis', '')*1000))+'m to ' +
@@ -214,6 +248,12 @@ def mapgenerate():
 
     lists = current_app.recommender.get_similar()
     recomm_list = current_app.data_manager.get_recommends(lists, "HouseID")
+    price_list = current_app.data_manager.get_history("listing_id", lists)
+    average_df = current_app.data_manager.get_calendar_df(['date', 'price'])
+    df_calendar = get_average(average_df)
+    forecast_df = current_app.forcaster.make_forecast(df_calendar)
+    forecast_curves, pre_curve = get_curves(
+        df_calendar, forecast_df, price_list, int(user_input_data.get('price', '')))
     s = []
     for row_num, row in enumerate(recomm_list.itertuples(index=False), start=1):
         s1 = house_to_draw(row_num, row)
@@ -243,7 +283,7 @@ def mapgenerate():
             <p>{label[11]}</p>
         </div>
     '''
-        iframe0 = folium.IFrame(html=simi_labels, width=300, height=150)
+        iframe0 = folium.IFrame(html=simi_labels, width=320, height=150)
         popup0 = folium.Popup(iframe0, max_width=2650)
         folium.Marker(
             location=[lat, lon],
@@ -256,6 +296,9 @@ def mapgenerate():
     user_cooking = user_df.cooking_facilities.iloc[0]
     user_interior = user_df.interior_facilities.iloc[0]
     user_other = user_df.other_needs.iloc[0]
+
+    # fig = current_app.forcaster.draw(pre_curve)
+    # graph_html = pyo.plot(fig, output_type='div', include_plotlyjs='cdn')
 
     user_label = f'''
         <div class="custom-popup">
@@ -272,9 +315,13 @@ def mapgenerate():
             <p>{user_df.distance_to_mrt.iloc[0]}</p>
             <p>{user_df.mall_info.iloc[0]}</p>
             <!-- Add other user label information here -->
+            <!--<div style="width: 100%; height: 100%;">-->
+            <!-- {{graph_html}} -->
+            <!--</div>-->
         </div>
     '''
-    iframe1 = folium.IFrame(html=user_label, width=300, height=150)
+    # iframe1 = folium.IFrame(html=user_label, width=760, height=420)
+    iframe1 = folium.IFrame(html=user_label, width=320, height=150)
     popup1 = folium.Popup(iframe1, max_width=2650)
     folium.Marker(
         location=[user_lat, user_lon],

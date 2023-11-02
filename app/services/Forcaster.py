@@ -10,50 +10,72 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.svm import SVR
 from xgboost import XGBRegressor
 import lightgbm as lgb
+from neuralprophet import load
 
 
 class Forcaster:
-    def __init__(self,model_path,scaler_path,encoder_path,lambda_value):
-        self.lambda_value=lambda_value
-        self.model=None
-        self.scaler=None
-        self.encoder=None
-        self.set_model(model_path,scaler_path,encoder_path)
-        self.input=None
-        self.result=None
-        self.importance=None
-        self.columns=None
-        
-    def load_input(self,input):
+    def __init__(self, model_path, time_path, scaler_path, encoder_path, lambda_value):
+        self.lambda_value = lambda_value
+        self.model = None
+        self.scaler = None
+        self.encoder = None
+        self.time = None
+        self.set_model(model_path, time_path, scaler_path, encoder_path)
+        self.input = None
+        self.result = None
+        self.importance = None
+        self.columns = None
+        self.forecast = None
+
+    def load_input(self, input):
         input_df = pd.DataFrame([input])
         # 分类numeric_cols和text_cols
-        numeric_cols = input_df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+        numeric_cols = input_df.select_dtypes(
+            include=['int64', 'float64']).columns.tolist()
         text_cols = input_df.select_dtypes('object').columns.tolist()
         # 缺失值填充
         imputer = np.nanmean(input_df[numeric_cols], axis=0)
-        input_df[numeric_cols] = np.where(np.isnan(input_df[numeric_cols]), imputer, input_df[numeric_cols])
+        input_df[numeric_cols] = np.where(
+            np.isnan(input_df[numeric_cols]), imputer, input_df[numeric_cols])
         # 独热编码
-        prediction_encoded_cols = list(self.encoder.get_feature_names_out(text_cols))
-        input_df[prediction_encoded_cols] = self.encoder.transform(input_df[text_cols].values)
-        self.columns=numeric_cols + prediction_encoded_cols
+        prediction_encoded_cols = list(
+            self.encoder.get_feature_names_out(text_cols))
+        input_df[prediction_encoded_cols] = self.encoder.transform(
+            input_df[text_cols].values)
+        self.columns = numeric_cols + prediction_encoded_cols
         x_input = input_df[self.columns]
         # 归一化
         self.input = self.scaler.transform(x_input)
-    
-    def set_model(self,model_path,scaler_path,encoder_path):
+
+    def set_model(self, model_path, time_path, scaler_path, encoder_path):
         self.model = joblib.load(model_path)
         self.scaler = joblib.load(scaler_path)
         self.encoder = joblib.load(encoder_path)
-    
+        self.time = load(time_path)
+
+    def make_forecast(self, x):
+        df_future = self.time.make_future_dataframe(x, periods=60)
+        forecast = self.time.predict(df_future)
+        forecast['yhat1'] = np.exp(forecast['yhat1'])
+        forecast['yhat1 10.0%'] = np.exp(forecast['yhat1 10.0%'])
+        forecast['yhat1 90.0%'] = np.exp(forecast['yhat1 90.0%'])
+        self.forecast = forecast
+        return forecast
+
+    def draw(self, forecast):
+        fig = self.time.plot(forecast)
+        return fig
+
     def predict(self):
-        stack_predicted_price_boxcox=self.model.predict(self.input)[0]
+        stack_predicted_price_boxcox = self.model.predict(self.input)[0]
         if self.lambda_value != 0:
-            predicted_price = (stack_predicted_price_boxcox * self.lambda_value + 1) ** (1 / self.lambda_value)
+            predicted_price = (stack_predicted_price_boxcox *
+                               self.lambda_value + 1) ** (1 / self.lambda_value)
         else:
             predicted_price = np.exp(stack_predicted_price_boxcox) - 1
-        self.result=predicted_price
+        self.result = predicted_price
         return self.result
-        
+
     def get_feature_importance(self):
         base_models = list(self.model.named_estimators_.values())
 
@@ -77,7 +99,5 @@ class Forcaster:
 
         # 将SHAP值转换为数据帧
         shap_df = pd.DataFrame(stacking_shap_values, columns=self.columns)
-        self.importance=shap_df.iloc[0].to_dict()
+        self.importance = shap_df.iloc[0].to_dict()
         return self.importance
-    
-    

@@ -3,18 +3,19 @@ from flask import current_app
 from typing import List, Optional, Type
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.exc import NoResultFound
-from typing import Dict
+from typing import Dict, Union
 from flask_sqlalchemy import Model
 import requests
 import json
 
 from app.authentication.models import User
-from app.home.models import Rating, RentalHouse, Poi, Mall,MRT
+from app.home.models import Rating, RentalHouse, Poi, Mall, MRT, Calendar
 # from app.config import GEOCODING_APIKEY
 
 import datetime
 from dataclasses import dataclass
 from typing import List, Any
+
 
 @dataclass
 class Rental:
@@ -30,26 +31,26 @@ class Rental:
     price: str
     distance_to_mrt: str
     mall_info: str
-    lat:float
-    lng:float
+    lat: float
+    lng: float
     location_info: str
     location_href: str
     img_src: str
 
     @staticmethod
     def get_reverseGeocoding(coordinates):
-        GEOCODING_APIKEY=current_app.config['GEOCODING_APIKEY']
+        GEOCODING_APIKEY = current_app.config['GEOCODING_APIKEY']
         url = f'https://maps.googleapis.com/maps/api/geocode/json'
         formatted_string = '{},{}'.format(coordinates[0], coordinates[1])
         parameters = {
             'latlng': formatted_string,
             'key': GEOCODING_APIKEY
         }
-        response = requests.get(url, params = parameters)
+        response = requests.get(url, params=parameters)
         if response.status_code == 200:
             data = json.loads(response.text)
-            if data["status"]=="OK" :
-                result=data["results"][0]["formatted_address"]
+            if data["status"] == "OK":
+                result = data["results"][0]["formatted_address"]
                 return result
             else:
                 print("Invalid query")
@@ -59,9 +60,9 @@ class Rental:
             return 1
 
     def get_location_info(self):
-        loc=self.get_reverseGeocoding([self.lat,self.lng])
-        self.location_info=str(loc)
-        return 
+        loc = self.get_reverseGeocoding([self.lat, self.lng])
+        self.location_info = str(loc)
+        return
 
 
 @dataclass
@@ -85,7 +86,7 @@ class FormData:
 
     @staticmethod
     def get_geocoding(location):
-        GEOCODING_APIKEY=current_app.config['GEOCODING_APIKEY']
+        GEOCODING_APIKEY = current_app.config['GEOCODING_APIKEY']
         url = 'https://maps.googleapis.com/maps/api/geocode/json'
         parameters = {
             'address': location,
@@ -100,13 +101,13 @@ class FormData:
                 return [geocoding["lat"], geocoding["lng"]]
             else:
                 print("Invalid query")
-                return [1.352083,103.819836]
+                return [1.352083, 103.819836]
         else:
             print('Request failed with status code:', response.status_code)
-            return [1.352083,103.819836]
+            return [1.352083, 103.819836]
 
     @classmethod
-    def from_form(cls, form,desired_month):
+    def from_form(cls, form, desired_month):
         location = cls.get_geocoding(form.location.data)
         return cls(
             minprice=int(form.minprice.data),
@@ -127,9 +128,9 @@ class FormData:
             other_needs=form.other_needs.data
         )
 
-
     def get_normalized_weights(self):
-        total = float(self.p_rating) + float(self.l_rating) + float(self.t_rating) + float(self.a_rating)
+        total = float(self.p_rating) + float(self.l_rating) + \
+            float(self.t_rating) + float(self.a_rating)
         if total == 0:
             return {
                 'price': 0.25,
@@ -143,9 +144,10 @@ class FormData:
             'distance': float(self.l_rating) / total,
             'amenities': float(self.a_rating) / total
         }
-    
-    def amenities_to_vector(self,amenities_list):
-        reference_list = ['aircon', 'BBQ', 'gym', 'pool', 'dryer', 'Wifi', 'kitchen', 'Backyard', 'TV', 'refrigerator', 'Microwave', 'Oven', 'Pets', 'stove', 'fan']
+
+    def amenities_to_vector(self, amenities_list):
+        reference_list = ['aircon', 'BBQ', 'gym', 'pool', 'dryer', 'Wifi', 'kitchen',
+                          'Backyard', 'TV', 'refrigerator', 'Microwave', 'Oven', 'Pets', 'stove', 'fan']
         self.vector = [0] * len(reference_list)
         amenity_mapping = {
             'microwave': 'Microwave',
@@ -164,7 +166,8 @@ class FormData:
     def convert_amenities_to_input(self):
 
         # 将所有表单中的多选字段合并到一个列表中
-        all_selected_amenities = [self.public_facilities , self.cooking_facilities , self.interior_facilities , self.other_needs]
+        all_selected_amenities = [
+            self.public_facilities, self.cooking_facilities, self.interior_facilities, self.other_needs]
         return self.amenities_to_vector(all_selected_amenities)
 
 
@@ -187,8 +190,8 @@ class QueryData:
     other_needs: str
 
     @staticmethod
-    def get_geocoding(region,postcode):
-        GEOCODING_APIKEY=current_app.config['GEOCODING_APIKEY']
+    def get_geocoding(region, postcode):
+        GEOCODING_APIKEY = current_app.config['GEOCODING_APIKEY']
         url = 'https://maps.googleapis.com/maps/api/geocode/json'
         parameters = {
             'address': region+", Singapore"+postcode,
@@ -203,13 +206,14 @@ class QueryData:
                 return [geocoding["lat"], geocoding["lng"]]
             else:
                 print("Invalid query")
-                return [1.352083,103.819836]
+                return [1.352083, 103.819836]
         else:
             print('Request failed with status code:', response.status_code)
-            return [1.352083,103.819836]
-        
-    def amenities_to_vector(self,amenities_list):
-        reference_list = ['aircon', 'BBQ', 'gym', 'pool', 'dryer', 'Wifi', 'kitchen', 'Backyard', 'TV', 'refrigerator', 'Microwave', 'Oven', 'Pets', 'stove', 'fan']
+            return [1.352083, 103.819836]
+
+    def amenities_to_vector(self, amenities_list):
+        reference_list = ['aircon', 'BBQ', 'gym', 'pool', 'dryer', 'Wifi', 'kitchen',
+                          'Backyard', 'TV', 'refrigerator', 'Microwave', 'Oven', 'Pets', 'stove', 'fan']
         self.vector = [0] * len(reference_list)
         amenity_mapping = {
             'microwave': 'Microwave',
@@ -225,8 +229,9 @@ class QueryData:
                     self.vector[reference_list.index(standardized_amenity)] = 1
         return self.vector
 
+
 class DataManager:
-    def __init__(self,app):
+    def __init__(self, app):
         self.db = app.extensions['sqlalchemy'].db
         # self.Model = self.db.Model
 
@@ -256,7 +261,6 @@ class DataManager:
     def get_rating(self, user_id: int) -> List[Rating]:
         """Get a poi by ID."""
         return self.get_by_id(Rating, user_id)
-    
 
     def get_poi(self, poi_id: int) -> Optional[Poi]:
         """Get a poi by ID."""
@@ -264,51 +268,72 @@ class DataManager:
 
     def get_df_by_ids(self, model: Type[DeclarativeMeta], ids: List[int], id_column_name: str) -> pd.DataFrame:
         """Get records by a list of IDs."""
-        query = self.db.session.query(model).filter(getattr(model, id_column_name).in_(ids))
+        query = self.db.session.query(model).filter(
+            getattr(model, id_column_name).in_(ids))
         df = pd.read_sql(query.statement, self.db.engine)
         return df
 
     def get_recommends(self, house_ids: List[int], id_column_name: str = 'id') -> pd.DataFrame:
         """Get rentalhouses by a list of IDs."""
         return self.get_df_by_ids(RentalHouse, house_ids, id_column_name)
-    
-    
+
+    def get_df_by_column_values(self, model: Type[DeclarativeMeta], column_name: str, values: List[Union[int, str, float]]) -> List[pd.DataFrame]:
+        """Get records by a list of values for a specific column."""
+        df_list = []
+        for value in values:
+            query = self.db.session.query(model).filter(
+                getattr(model, column_name) == value)
+            df = pd.read_sql(query.statement, self.db.session.bind)
+            df_list.append(df)
+        return df_list
+
+    def get_history(self, column_name: str, house_ids: List[int]) -> pd.DataFrame:
+        """Get rentalhouses by a list of IDs."""
+        return self.get_df_by_column_values(Calendar, column_name, house_ids)
+
     def get_df_from_columns(self, model: Type[DeclarativeMeta], columns: List[str]) -> pd.DataFrame:
         """Get specific columns of all rows in a table."""
-        query = self.db.session.query(*[getattr(model, column) for column in columns])
+        query = self.db.session.query(
+            *[getattr(model, column) for column in columns])
         df = pd.read_sql(query.statement, self.db.engine)
         return df
-    
+
     def get_houses_df(self, columns: List[str]) -> pd.DataFrame:
         """Get specific columns of all rows in a table."""
         return self.get_df_from_columns(RentalHouse, columns)
-    
+
     def get_ratings_df(self, columns: List[str]) -> pd.DataFrame:
         """Get specific columns of all rows in a table."""
         return self.get_df_from_columns(Rating, columns)
-    
-    def get_mrts_df(self,columns: List[str]) -> pd.DataFrame:
+
+    def get_mrts_df(self, columns: List[str]) -> pd.DataFrame:
         return self.get_df_from_columns(MRT, columns)
-    
-    def get_malls_df(self,columns: List[str]) -> pd.DataFrame:
+
+    def get_malls_df(self, columns: List[str]) -> pd.DataFrame:
         return self.get_df_from_columns(Mall, columns)
-    
+
     def get_pois_df(self, columns: List[str]) -> pd.DataFrame:
         """Get specific columns of all rows in a table."""
         return self.get_df_from_columns(Poi, columns)
-    
+
+    def get_calendar_df(self, columns: List[str]) -> pd.DataFrame:
+        """Get specific columns of all rows in a table."""
+        return self.get_df_from_columns(Calendar, columns)
+
     def update_object_by_id(self, model: Model, primary_key_name: str, object_id: int, **kwargs) -> bool:
         """Update an object in the database by ID."""
         try:
 
-            obj = self.db.session.query(model).filter(getattr(model, primary_key_name) == object_id).one()
-            
+            obj = self.db.session.query(model).filter(
+                getattr(model, primary_key_name) == object_id).one()
+
             for key, value in kwargs.items():
                 if hasattr(obj, key):
                     setattr(obj, key, value)
                 else:
-                    print(f"Warning: {model.__name__} does not have attribute {key}")
-            
+                    print(
+                        f"Warning: {model.__name__} does not have attribute {key}")
+
             self.db.session.commit()
             return True
         except NoResultFound:
@@ -319,9 +344,9 @@ class DataManager:
             self.db.session.rollback()
             return False
 
-    def update_recommends_by_uid(self, user_id: int, updates: Dict[str, str]) -> bool:
-        """Update a user's recommendation results in the database by user ID."""
-        return self.update_object_by_id(Recommendation, 'userID', user_id, **updates)
+    # def update_recommends_by_uid(self, user_id: int, updates: Dict[str, str]) -> bool:
+    #     """Update a user's recommendation results in the database by user ID."""
+    #     return self.update_object_by_id(Recommendation, 'userID', user_id, **updates)
 
     def update_rating_by_uid(self, user_id: int, updates: Dict[str, str]) -> bool:
         """Update a user's rating results in the database by user ID."""
