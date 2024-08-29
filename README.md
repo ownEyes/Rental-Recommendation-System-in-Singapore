@@ -1,8 +1,7 @@
 ## SECTION 1 : PROJECT TITLE
 ## Rental Recommendation Systems in Singapore
 
-<img src="SystemCode/Rental-Recommendation-System-in-Singapore/app/static/img/Rental.jpg"
-     style="float: left; margin-right: 0px;" />
+Check branch '5001_release', '5002_release' for the Rental Recommendation Systems and Rental Price Forecast Systems respectively.
 
 ---
 
