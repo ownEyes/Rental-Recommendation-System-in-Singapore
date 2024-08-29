@@ -1,4 +1,4 @@
-# Rental Recommendation and Price Forecast Systems in Singapore
+# Rental Recommendation and Price Forecast System in Singapore
 
 **Note**: Check branch '*5001_release*', '*5002_release*' for the Rental Recommendation System and Rental Price Forecast System respectively.
 
