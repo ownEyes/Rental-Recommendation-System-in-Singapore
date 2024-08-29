@@ -1,3 +1,17 @@
+- [Rental-Recommendation-System-in-Singapore](#rental-recommendation-system-in-singapore)
+- [Conda virtual environment configuration](#conda-virtual-environment-configuration)
+- [Install Required Packages](#install-required-packages)
+- [Github SSH Key Setup](#github-ssh-key-setup)
+- [GitHub Workflow](#github-workflow)
+  - [Set up the local development environment](#set-up-the-local-development-environment)
+  - [Step 1: Create a branch](#step-1-create-a-branch)
+  - [Step 2: Make changes locally](#step-2-make-changes-locally)
+  - [Step 3: Create a pull request](#step-3-create-a-pull-request)
+  - [Step 4: Address review comments](#step-4-address-review-comments)
+  - [Step 5: Merge your pull request](#step-5-merge-your-pull-request)
+  - [Step 6: Delete your branch](#step-6-delete-your-branch)
+  - [How to change a branch name](#how-to-change-a-branch-name)
+
 # Rental-Recommendation-System-in-Singapore
 Intelligent Reasoning Systems: Group 3.
 # Conda virtual environment configuration
